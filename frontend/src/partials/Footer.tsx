@@ -19,7 +19,7 @@ const Footer = () => {
               <li><Link to="/hotels">Nos hôtels</Link></li>
               <li><Link to="/activites">Nos activités</Link></li>
               <li><Link to="/conferences">Les conférences</Link></li>
-              <li><a href="#">Réserver votre séjour</a></li>
+              <li><Link to="/reserver">Réserver votre séjour</Link></li>
             </ul>
           </div>
 

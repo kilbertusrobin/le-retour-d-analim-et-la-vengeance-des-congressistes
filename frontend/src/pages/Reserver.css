@@ -1,0 +1,787 @@
+.res-spacer {
+    height: 100px;
+}
+
+.res-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 20px 100px;
+}
+
+/* ── Stepper ── */
+.res-stepper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 48px;
+}
+
+.res-step-item {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.res-step-item:last-child {
+    flex: 0;
+}
+
+.res-step-bubble {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    color: rgba(0,0,0,0.4);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.25s ease, color 0.25s ease;
+    z-index: 1;
+}
+
+.res-step-item--active .res-step-bubble {
+    background: #01b285;
+    color: #fff;
+}
+
+.res-step-item--done .res-step-bubble {
+    background: #01b285;
+    color: #fff;
+}
+
+.res-step-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.35);
+    margin-left: 8px;
+    white-space: nowrap;
+    transition: color 0.25s ease;
+}
+
+.res-step-item--active .res-step-label,
+.res-step-item--done .res-step-label {
+    color: #000;
+}
+
+.res-step-line {
+    flex: 1;
+    height: 1.5px;
+    background: #e0e0e0;
+    margin: 0 12px;
+    transition: background 0.25s ease;
+}
+
+.res-step-item--done .res-step-line {
+    background: #01b285;
+}
+
+/* ── Content ── */
+.res-content {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 18px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* ── Step common ── */
+.res-step {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.res-step-titre {
+    font-size: 22px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+}
+
+.res-step-sous {
+    font-size: 14px;
+    color: rgba(0,0,0,0.5);
+    margin: -16px 0 0;
+}
+
+/* ── Step 1 Dates ── */
+.res-dates-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+}
+
+.res-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.res-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #000;
+}
+
+.res-input {
+    padding: 11px 14px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #000;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.res-input:focus {
+    border-color: #01b285;
+}
+
+.res-dates-arrow {
+    font-size: 20px;
+    color: rgba(0,0,0,0.25);
+    padding-bottom: 10px;
+}
+
+.res-nuits-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #01b285;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* ── Nuits bar ── */
+.res-nuits-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f5f5f5;
+    border-radius: 10px;
+    padding: 12px 16px;
+}
+
+.res-nuits-dates {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(0,0,0,0.6);
+}
+
+.res-nuits-counter {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.res-nuits-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid #d0d0d0;
+    background: #fff;
+    font-size: 18px;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #000;
+    line-height: 1;
+    padding: 0;
+    transition: border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.res-nuits-btn:hover {
+    border-color: #01b285;
+    color: #01b285;
+}
+
+.res-nuits-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+    pointer-events: none;
+}
+
+.res-nuits-val {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+    min-width: 60px;
+    text-align: center;
+}
+
+/* ── Step 2 Hébergement ── */
+.res-hotels-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.res-hotel-card {
+    border: 1.5px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+.res-hotel-card--open {
+    border-color: #01b285;
+}
+
+.res-hotel-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    cursor: pointer;
+}
+
+.res-hotel-img {
+    width: 72px;
+    height: 52px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.res-hotel-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.res-hotel-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.res-hotel-nom {
+    font-size: 15px;
+    font-weight: 700;
+    color: #000;
+}
+
+.res-etoiles {
+    font-size: 12px;
+}
+
+.res-hotel-lieu {
+    font-size: 12px;
+    color: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.res-hotel-depuis {
+    font-size: 13px;
+    color: rgba(0,0,0,0.5);
+}
+
+.res-hotel-depuis strong {
+    color: #000;
+}
+
+.res-hotel-chevron {
+    transition: transform 0.25s ease;
+    color: rgba(0,0,0,0.3);
+    flex-shrink: 0;
+}
+
+.res-hotel-card--open .res-hotel-chevron {
+    transform: rotate(180deg);
+}
+
+/* Chambres */
+.res-chambres-list {
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+}
+
+.res-chambre-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.15s ease;
+}
+
+.res-chambre-row:last-child {
+    border-bottom: none;
+}
+
+.res-chambre-row:hover {
+    background: #fafafa;
+}
+
+.res-chambre-row--selected {
+    background: #f0faf6;
+}
+
+.res-chambre-img {
+    width: 60px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.res-chambre-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.res-chambre-nom {
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+}
+
+.res-chambre-meta {
+    font-size: 12px;
+    color: rgba(0,0,0,0.4);
+}
+
+.res-pdj {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    color: rgba(0,0,0,0.6);
+    font-weight: 500;
+    user-select: none;
+}
+
+.res-pdj input { display: none; }
+
+.res-pdj-box {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1.5px solid #ccc;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.res-pdj input:checked + .res-pdj-box {
+    background: #01b285;
+    border-color: #01b285;
+}
+
+.res-pdj-prix {
+    color: rgba(0,0,0,0.35);
+    font-weight: 400;
+}
+
+.res-chambre-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.res-chambre-prix {
+    font-size: 14px;
+    color: #000;
+}
+
+.res-chambre-prix strong {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.res-prix-nuit-label,
+.res-prix-total-label {
+    font-size: 11px;
+    color: rgba(0,0,0,0.4);
+    font-weight: 400;
+}
+
+.res-chambre-select {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.3);
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: #f0f0f0;
+    transition: background 0.15s, color 0.15s;
+}
+
+.res-chambre-select--on {
+    background: #e0f7f0;
+    color: #01b285;
+}
+
+/* ── Step 3 Activités ── */
+.res-activites-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.res-activite-card {
+    border: 1.5px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.res-activite-card--selected {
+    border-color: #01b285;
+}
+
+.res-activite-img-wrapper {
+    position: relative;
+    height: 120px;
+}
+
+.res-activite-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.res-activite-cat {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+.res-activite-check {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease;
+}
+
+.res-activite-check--on {
+    background: #01b285;
+    border-color: #01b285;
+}
+
+.res-activite-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.res-activite-nom {
+    font-size: 13px;
+    font-weight: 600;
+    color: #000;
+    line-height: 1.35;
+}
+
+.res-activite-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.res-activite-duree {
+    font-size: 11px;
+    color: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.res-activite-prix strong {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+}
+
+/* ── Step 4 Récap ── */
+.res-recap-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.res-recap-bloc {
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.res-recap-bloc-titre {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(0,0,0,0.4);
+    margin: 0 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.res-recap-val {
+    font-size: 15px;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+}
+
+.res-recap-meta {
+    font-size: 13px;
+    color: rgba(0,0,0,0.45);
+    margin: 0;
+}
+
+.res-recap-prix {
+    font-size: 15px;
+    font-weight: 700;
+    color: #000;
+    margin: 4px 0 0;
+}
+
+.res-recap-vide {
+    font-size: 14px;
+    color: rgba(0,0,0,0.3);
+    margin: 0;
+}
+
+.res-recap-activite-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.res-recap-activite-row .res-recap-val {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.res-recap-sous-total {
+    padding-top: 8px;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 4px !important;
+}
+
+.res-recap-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #01b285;
+    border-radius: 12px;
+    padding: 20px 24px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.res-recap-total-montant {
+    font-size: 28px;
+}
+
+.res-confirm-btn {
+    padding: 15px 32px;
+    background: #01b285;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    width: fit-content;
+    transition: background 0.2s ease;
+    align-self: flex-end;
+}
+
+.res-confirm-btn:hover {
+    background: #018e6f;
+    border-color: transparent;
+}
+
+/* ── Nav buttons ── */
+.res-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 8px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.res-btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.45);
+    cursor: pointer;
+    font-family: inherit;
+    padding: 0;
+    transition: color 0.15s ease;
+}
+
+.res-btn-back:hover {
+    color: #000;
+    border-color: transparent;
+}
+
+.res-btn-skip {
+    background: none;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(0,0,0,0.35);
+    cursor: pointer;
+    font-family: inherit;
+    padding: 0;
+    transition: color 0.15s ease;
+}
+
+.res-btn-skip:hover {
+    color: rgba(0,0,0,0.6);
+    border-color: transparent;
+}
+
+.res-btn-next {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 11px 22px;
+    background: #01b285;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.res-btn-next:hover {
+    background: #018e6f;
+    border-color: transparent;
+}
+
+.res-btn-next:disabled {
+    opacity: 0.4;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* ── Confirmation ── */
+.res-confirm-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 60px 20px;
+    gap: 16px;
+}
+
+.res-confirm-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #01b285;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.res-confirm-titre {
+    font-size: 28px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+}
+
+.res-confirm-sous {
+    font-size: 15px;
+    color: rgba(0,0,0,0.5);
+    margin: 0;
+    max-width: 420px;
+}
+
+.res-confirm-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.res-confirm-btn-profil {
+    padding: 12px 24px;
+    background: #01b285;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.res-confirm-btn-profil:hover {
+    background: #018e6f;
+    color: #fff;
+}
+
+.res-confirm-btn-home {
+    padding: 12px 24px;
+    background: #f5f5f5;
+    color: #000;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.res-confirm-btn-home:hover {
+    background: #ebebeb;
+    color: #000;
+}

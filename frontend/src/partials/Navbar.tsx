@@ -31,7 +31,7 @@ const Navbar = () => {
           <Link to="/hotels" className="nav-link">Nos hôtels</Link>
           <Link to="/activites" className="nav-link">Nos activités</Link>
           <Link to="/conferences" className="nav-link">Les conférences</Link>
-          <p className="nav-link">Réserver votre séjour</p>
+          <Link to="/reserver" className="nav-link">Réserver votre séjour</Link>
         </div>
         <div className="btn-wrapper">
           <BtnVert text="+33 6 12 34 56 78" lien="tel:+33612345678" />

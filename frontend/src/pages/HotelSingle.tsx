@@ -1,6 +1,7 @@
 import "./HotelSingle.css";
 import { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useToast } from "../components/Toast";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -90,7 +91,99 @@ const Etoiles = ({ n }: { n: number }) => (
   </div>
 );
 
+const diffNuits = (a: string, b: string) => {
+  const d = (new Date(b).getTime() - new Date(a).getTime()) / 86400000;
+  return isNaN(d) || d < 0 ? 0 : Math.round(d);
+};
+
+const formatDate = (d: string) =>
+  d ? new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "long" }) : "—";
+
+type ReservModal = { chambre: typeof hotel.chambres[0]; pdjActif: boolean } | null;
 type Lightbox = { images: string[]; index: number } | null;
+
+const ReservationModal = ({ modal, onClose }: { modal: ReservModal; onClose: () => void }) => {
+  const [arrivee, setArrivee] = useState("2025-06-12");
+  const [depart, setDepart] = useState("2025-06-15");
+  const { toast } = useToast();
+
+  if (!modal) return null;
+  const { chambre, pdjActif } = modal;
+
+  const nuits = diffNuits(arrivee, depart);
+  const prixNuit = chambre.prix + (pdjActif ? chambre.prixPdj : 0);
+  const total = nuits * prixNuit;
+
+  const addNuit = () => {
+    const d = new Date(depart); d.setDate(d.getDate() + 1);
+    setDepart(d.toISOString().split("T")[0]);
+  };
+  const removeNuit = () => {
+    if (nuits <= 1) return;
+    const d = new Date(depart); d.setDate(d.getDate() - 1);
+    setDepart(d.toISOString().split("T")[0]);
+  };
+
+  return (
+    <div className="reserv-overlay" onClick={onClose}>
+      <div className="reserv-modal" onClick={e => e.stopPropagation()}>
+        <div className="reserv-modal-header">
+          <div>
+            <p className="reserv-modal-chambre">{chambre.nom}</p>
+            <p className="reserv-modal-hotel">{hotel.nom}</p>
+          </div>
+          <button className="reserv-modal-close" onClick={onClose}>✕</button>
+        </div>
+
+        <div className="reserv-modal-body">
+          <div className="reserv-dates-row">
+            <div className="reserv-field">
+              <label className="reserv-label">Arrivée</label>
+              <input type="date" className="reserv-input" value={arrivee}
+                onChange={e => setArrivee(e.target.value)} />
+            </div>
+            <span className="reserv-arrow">→</span>
+            <div className="reserv-field">
+              <label className="reserv-label">Départ</label>
+              <input type="date" className="reserv-input" value={depart}
+                onChange={e => setDepart(e.target.value)} />
+            </div>
+          </div>
+
+          <div className="reserv-nuits-row">
+            <span className="reserv-nuits-label">Durée du séjour</span>
+            <div className="reserv-nuits-counter">
+              <button className="reserv-nuits-btn" onClick={removeNuit} disabled={nuits <= 1}>−</button>
+              <span className="reserv-nuits-val">{nuits} nuit{nuits > 1 ? "s" : ""}</span>
+              <button className="reserv-nuits-btn" onClick={addNuit}>+</button>
+            </div>
+          </div>
+
+          {pdjActif && (
+            <p className="reserv-pdj-info">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#01b285" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+              Petit déjeuner inclus (+{chambre.prixPdj} € / nuit)
+            </p>
+          )}
+        </div>
+
+        <div className="reserv-modal-footer">
+          <div className="reserv-total">
+            <span className="reserv-total-label">Total</span>
+            <span className="reserv-total-montant">{nuits > 0 ? total : "—"} {nuits > 0 ? "€" : ""}</span>
+            {nuits > 0 && <span className="reserv-total-detail">({nuits} nuit{nuits > 1 ? "s" : ""} × {prixNuit} €)</span>}
+          </div>
+          <button className="reserv-confirm-btn" disabled={nuits <= 0} onClick={() => {
+            toast(`${modal!.chambre.nom} réservée avec succès !`);
+            onClose();
+          }}>
+            Confirmer la réservation
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const LightboxModal = ({ lightbox, onClose, onPrev, onNext, onGoTo }: {
   lightbox: Lightbox;
@@ -152,6 +245,7 @@ const HotelSingle = () => {
   const [isEnd, setIsEnd] = useState(false);
   const [pdj, setPdj] = useState<Record<number, boolean>>({});
   const [lightbox, setLightbox] = useState<Lightbox>(null);
+  const [reservModal, setReservModal] = useState<ReservModal>(null);
 
   const updateState = (s: SwiperType) => {
     setIsBeginning(s.isBeginning);
@@ -179,6 +273,7 @@ const HotelSingle = () => {
     <>
       <Navbar />
       <LightboxModal lightbox={lightbox} onClose={closeLightbox} onPrev={prevLightbox} onNext={nextLightbox} onGoTo={goToLightbox} />
+      <ReservationModal modal={reservModal} onClose={() => setReservModal(null)} />
 
       <div className="single-header-spacer" />
 
@@ -292,7 +387,7 @@ const HotelSingle = () => {
                         <strong>{total} €</strong>
                         <span className="chambre-prix-nuit">/ nuit</span>
                       </div>
-                      <BtnVert text="Réserver" lien="#" withTel={false} />
+                      <BtnVert text="Réserver" lien="#" withTel={false} onClick={() => setReservModal({ chambre: c, pdjActif: pdjActif })} />
                     </div>
                   </div>
                 </div>
