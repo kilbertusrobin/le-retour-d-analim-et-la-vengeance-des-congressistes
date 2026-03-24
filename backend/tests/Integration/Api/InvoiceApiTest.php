@@ -84,10 +84,17 @@ class InvoiceApiTest extends ApiTestCase
         $this->assertTrue($data['print']);
     }
 
-    public function testGetInvoicesWithUserTokenReturns200(): void
+    public function testGetInvoicesWithUserTokenReturns403(): void
     {
         $this->jsonRequest('GET', '/api/invoices', [], $this->userToken);
-        $this->assertResponseStatusCodeSame(200);
+        $this->assertResponseStatusCodeSame(403);
+    }
+
+    public function testGetInvoicesWithAdminTokenReturns200(): void
+    {
+        $this->jsonRequest('GET', '/api/invoices', [], $this->adminToken);
+        $data = $this->assertJsonResponse(200);
+        $this->assertArrayHasKey('member', $data);
     }
 
     public function testGetInvoicesWithoutTokenReturns401(): void

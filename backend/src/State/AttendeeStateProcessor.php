@@ -11,6 +11,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Validates business rules before persisting Attendee:
@@ -25,6 +27,7 @@ class AttendeeStateProcessor implements ProcessorInterface
         private ProcessorInterface $persistProcessor,
         private EventDispatcherInterface $dispatcher,
         private UserPasswordHasherInterface $hasher,
+        private AuthorizationCheckerInterface $authChecker,
     ) {}
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
@@ -45,6 +48,12 @@ class AttendeeStateProcessor implements ProcessorInterface
         if (!$isCreate && isset($context['previous_data'])) {
             /** @var Attendee $previous */
             $previous = $context['previous_data'];
+
+            // Protect role escalation: only admin can change roles
+            $rolesChanged = array_diff($data->getRoles(), $previous->getRoles()) || array_diff($previous->getRoles(), $data->getRoles());
+            if ($rolesChanged && !$this->authChecker->isGranted('ROLE_ADMIN')) {
+                throw new AccessDeniedException('Vous ne pouvez pas modifier les rôles.');
+            }
 
             $sessionsChanged = $previous->getSessionRegistration()->toArray() !== $data->getSessionRegistration()->toArray();
             $activitiesChanged = $previous->getActivityRegistration()->toArray() !== $data->getActivityRegistration()->toArray();

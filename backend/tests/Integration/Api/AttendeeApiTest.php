@@ -63,10 +63,20 @@ class AttendeeApiTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(401);
     }
 
-    public function testGetAttendeesWithTokenReturns200(): void
+    public function testGetAttendeesWithUserTokenReturns403(): void
     {
         $this->createAttendee('user@test.com', 'password123');
         $token = $this->getToken('user@test.com', 'password123');
+
+        $this->jsonRequest('GET', '/api/attendees', [], $token);
+
+        $this->assertResponseStatusCodeSame(403);
+    }
+
+    public function testGetAttendeesWithAdminTokenReturns200(): void
+    {
+        $this->createAttendee('admin@test.com', 'admin123', ['ROLE_ADMIN']);
+        $token = $this->getToken('admin@test.com', 'admin123');
 
         $this->jsonRequest('GET', '/api/attendees', [], $token);
 
@@ -129,7 +139,8 @@ class AttendeeApiTest extends ApiTestCase
     {
         $this->createAttendee('alice@test.com', 'password123', [], 'Alice', 'Martin');
         $this->createAttendee('bob@test.com', 'password123', [], 'Bob', 'Dupont');
-        $token = $this->getToken('alice@test.com', 'password123');
+        $this->createAttendee('admin@test.com', 'admin123', ['ROLE_ADMIN']);
+        $token = $this->getToken('admin@test.com', 'admin123');
 
         $this->jsonRequest('GET', '/api/attendees?email=alice@test.com', [], $token);
 
