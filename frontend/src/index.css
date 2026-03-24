@@ -1,5 +1,5 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Montserrat', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -24,8 +24,6 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -52,6 +50,58 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.btn-vert,
+.btn-bleu {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: #ffffff;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-wrapper{
+  display: flex;
+  gap: 10px;
+}
+
+.btn-vert {
+  background-color: #01b285;
+}
+
+.btn-vert:hover {
+  background-color: #018e6f;
+  color: #ffffff;
+}
+
+.btn-bleu {
+  background-color: #02affe;
+}
+
+.btn-bleu:hover {
+  background-color: #0271a8;
+  color: #ffffff;
+}
+
+.layout-maxed {
+  width: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .layout-maxed {
+    padding-left: 80px;
+    padding-right: 80px;
+  }
 }
 
 @media (prefers-color-scheme: light) {

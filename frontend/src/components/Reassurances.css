@@ -1,0 +1,35 @@
+.reassurances {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding: 80px;
+}
+
+.reassurance-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 32px;
+    border-radius: 14px;
+}
+
+.reassurance-icon {
+    color: #01b285;
+    display: flex;
+}
+
+.reassurance-titre {
+    font-size: 17px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+}
+
+.reassurance-texte {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #666;
+    margin: 0;
+}
