@@ -39,6 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Patch(
             security: "is_granted('ROLE_ADMIN')",
+            denormalizationContext: ['groups' => ['attendee:write', 'attendee:admin:write']],
             processor: AttendeeStateProcessor::class,
         ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
@@ -90,6 +91,7 @@ class Attendee implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $breakfast = false;
 
     #[ORM\Column]
+    #[Groups(['attendee:read', 'attendee:admin:write'])]
     private array $roles = [];
 
     #[ORM\Column]
