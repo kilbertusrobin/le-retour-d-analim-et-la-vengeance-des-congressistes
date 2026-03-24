@@ -1,4 +1,5 @@
 import "./Footer.css";
+import { Link } from "react-router-dom";
 import LayoutMaxed from "../components/LayoutMaxed";
 import analim from "../assets/images/analim.png";
 
@@ -15,9 +16,9 @@ const Footer = () => {
           <div className="footer-col">
             <h4 className="footer-col-title">Navigation</h4>
             <ul>
-              <li><a href="#">Nos hôtels</a></li>
-              <li><a href="#">Nos activités</a></li>
-              <li><a href="#">Les conférences</a></li>
+              <li><Link to="/hotels">Nos hôtels</Link></li>
+              <li><Link to="/activites">Nos activités</Link></li>
+              <li><Link to="/conferences">Les conférences</Link></li>
               <li><a href="#">Réserver votre séjour</a></li>
             </ul>
           </div>

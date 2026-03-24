@@ -11,6 +11,10 @@
     top: 20px;
 }
 
+.navbar-fixed.navbar-not-home {
+    top: 20px;
+}
+
 .navbar-fixed.navbar-light nav {
     background-color: rgba(255, 255, 255, 0.85);
     border-color: #e0e0e0;
@@ -31,17 +35,21 @@
 nav {
     border-radius: 15px;
     border: 1px solid #ffffff30;
-    padding: 0px 20px;
+    padding: 16px 20px;
     display: flex;
     align-items: center;
     background-color: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 
+    .logo-link {
+        margin-right: auto;
+        display: flex;
+    }
+
     .logo {
         height: 40px;
         width: auto;
-        margin-right: auto;
         filter: brightness(0) invert(1);
     }
     .nav-links{
@@ -55,6 +63,9 @@ nav {
             padding: 12px 16px;
             border-radius: 8px;
             transition: background-color 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0;
             &:hover{
                 background-color: #ffffff20;
             }

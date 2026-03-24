@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
-    padding: 80px;
+    padding: 40px 80px;
 }
 
 .reassurance-card {

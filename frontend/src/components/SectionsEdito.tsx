@@ -51,7 +51,7 @@ export const SectionActivites = () => (
     titre="Découvrez Limoges autrement"
     texte="Entre deux sessions, prenez le temps de découvrir la richesse culturelle et naturelle de Limoges. Visites guidées de la Cité de la Céramique, balades en bord de Vienne, ateliers gastronomiques et sorties en groupe — des expériences variées pensées pour vous ressourcer et profiter pleinement de votre séjour."
     btn="Explorer les activités"
-    lien="#"
+    lien="/activites"
     image={activitesImg}
   />
 );
