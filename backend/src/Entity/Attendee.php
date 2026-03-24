@@ -17,6 +17,8 @@ use App\State\AttendeeStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -29,7 +31,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(),
         new Get(),
         new Post(
-            security: "is_granted('ROLE_ADMIN')",
             processor: AttendeeStateProcessor::class,
         ),
         new Put(
@@ -45,7 +46,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ApiFilter(OrderFilter::class, properties: ['last_name', 'first_name', 'email'])]
 #[ApiFilter(SearchFilter::class, properties: ['last_name' => 'partial', 'first_name' => 'partial', 'email' => 'exact'])]
-class Attendee
+class Attendee implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -88,6 +89,15 @@ class Attendee
     #[Groups(['attendee:read', 'attendee:write'])]
     private ?bool $breakfast = false;
 
+    #[ORM\Column]
+    private array $roles = [];
+
+    #[ORM\Column]
+    private ?string $password = null;
+
+    #[Groups(['attendee:write'])]
+    private ?string $plainPassword = null;
+
     #[ORM\ManyToOne(inversedBy: 'attendees')]
     #[Groups(['attendee:read', 'attendee:write'])]
     private ?PayerOrganization $organization = null;
@@ -121,6 +131,27 @@ class Attendee
     }
 
     public function getId(): ?int { return $this->id; }
+
+    public function getUserIdentifier(): string { return (string) $this->email; }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): static { $this->roles = $roles; return $this; }
+
+    public function getPassword(): ?string { return $this->password; }
+
+    public function setPassword(string $password): static { $this->password = $password; return $this; }
+
+    public function getPlainPassword(): ?string { return $this->plainPassword; }
+
+    public function setPlainPassword(?string $plainPassword): static { $this->plainPassword = $plainPassword; return $this; }
+
+    public function eraseCredentials(): void { $this->plainPassword = null; }
 
     public function getFirstName(): ?string { return $this->first_name; }
 

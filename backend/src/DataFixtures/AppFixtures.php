@@ -9,7 +9,6 @@ use App\Entity\Invoice;
 use App\Entity\Payment;
 use App\Entity\PayerOrganization;
 use App\Entity\Session;
-use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -36,13 +35,6 @@ class AppFixtures extends Fixture
     {
         $faker = \Faker\Factory::create('fr_FR');
         $faker->seed(42); // reproducible data
-
-        // ── Users ──────────────────────────────────────────────────────────────
-        $admin = $this->createUser($manager, 'admin@analim.fr', 'admin1234', ['ROLE_ADMIN', 'ROLE_USER']);
-        $userAccounts = [];
-        foreach (['alice@test.fr', 'bob@test.fr', 'charlie@test.fr', 'diane@test.fr', 'eric@test.fr'] as $email) {
-            $userAccounts[] = $this->createUser($manager, $email, 'user1234', ['ROLE_USER']);
-        }
 
         // ── Hotels ────────────────────────────────────────────────────────────
         $hotelsData = [
@@ -141,7 +133,9 @@ class AppFixtures extends Fixture
                 ->setAddress($faker->address())
                 ->setEmail($faker->unique()->safeEmail())
                 ->setDeposit(100.0)
-                ->setBreakfast($faker->boolean(40));
+                ->setBreakfast($faker->boolean(40))
+                ->setRoles($i === 0 ? ['ROLE_ADMIN'] : [])
+                ->setPassword($this->hasher->hashPassword(new Attendee(), 'user1234'));
 
             // Assign hotel to 15 out of 20
             if ($i < 15) {
@@ -210,16 +204,6 @@ class AppFixtures extends Fixture
         }
 
         $manager->flush();
-    }
-
-    private function createUser(ObjectManager $manager, string $email, string $plainPassword, array $roles): User
-    {
-        $user = new User();
-        $user->setEmail($email);
-        $user->setRoles($roles);
-        $user->setPassword($this->hasher->hashPassword($user, $plainPassword));
-        $manager->persist($user);
-        return $user;
     }
 
     private function calculateTotal(Attendee $attendee): float

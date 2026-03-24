@@ -10,6 +10,7 @@ use App\Event\AttendeeCreatedEvent;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * Validates business rules before persisting Attendee:
@@ -23,6 +24,7 @@ class AttendeeStateProcessor implements ProcessorInterface
         #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
         private ProcessorInterface $persistProcessor,
         private EventDispatcherInterface $dispatcher,
+        private UserPasswordHasherInterface $hasher,
     ) {}
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
@@ -32,6 +34,12 @@ class AttendeeStateProcessor implements ProcessorInterface
         }
 
         $isCreate = $operation instanceof Post;
+
+        // Hash password if provided
+        if ($data->getPlainPassword() !== null) {
+            $data->setPassword($this->hasher->hashPassword($data, $data->getPlainPassword()));
+            $data->eraseCredentials();
+        }
 
         // On PATCH or PUT, check business rules
         if (!$isCreate && isset($context['previous_data'])) {
