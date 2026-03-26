@@ -28,8 +28,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['attendee:write']],
     order: ['last_name' => 'ASC', 'first_name' => 'ASC'],
     operations: [
-        new GetCollection(),
-        new Get(),
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN')",
+        ),
+        new Get(
+            security: "is_granted('ROLE_ADMIN') or object == user",
+        ),
         new Post(
             processor: AttendeeStateProcessor::class,
         ),
@@ -38,7 +42,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             processor: AttendeeStateProcessor::class,
         ),
         new Patch(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN') or object == user",
+            denormalizationContext: ['groups' => ['attendee:write', 'attendee:admin:write']],
             processor: AttendeeStateProcessor::class,
         ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
@@ -90,6 +95,7 @@ class Attendee implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $breakfast = false;
 
     #[ORM\Column]
+    #[Groups(['attendee:read', 'attendee:admin:write'])]
     private array $roles = [];
 
     #[ORM\Column]

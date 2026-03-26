@@ -18,8 +18,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['payment:read']],
     denormalizationContext: ['groups' => ['payment:write']],
     operations: [
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Get(security: "is_granted('ROLE_USER')"),
+        new GetCollection(security: "is_granted('ROLE_ADMIN')"),
+        new Get(security: "is_granted('ROLE_ADMIN') or object.getInvoice().getAttendee() == user"),
         new Post(
             security: "is_granted('ROLE_ADMIN')",
             processor: PaymentStateProcessor::class,

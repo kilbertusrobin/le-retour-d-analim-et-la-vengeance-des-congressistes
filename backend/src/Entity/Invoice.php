@@ -21,8 +21,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
     normalizationContext: ['groups' => ['invoice:read']],
     denormalizationContext: ['groups' => ['invoice:write']],
     operations: [
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Get(security: "is_granted('ROLE_USER')"),
+        new GetCollection(security: "is_granted('ROLE_ADMIN')"),
+        new Get(security: "is_granted('ROLE_ADMIN') or object.getAttendee() == user"),
         new Post(
             security: "is_granted('ROLE_ADMIN')",
             processor: InvoiceStateProcessor::class,

@@ -14,12 +14,14 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class AttendeeStateProcessorTest extends TestCase
 {
     private ProcessorInterface $persistProcessor;
     private EventDispatcherInterface $dispatcher;
     private UserPasswordHasherInterface $hasher;
+    private AuthorizationCheckerInterface $authChecker;
     private AttendeeStateProcessor $processor;
 
     protected function setUp(): void
@@ -29,11 +31,14 @@ class AttendeeStateProcessorTest extends TestCase
 
         $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->hasher = $this->createMock(UserPasswordHasherInterface::class);
+        $this->authChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $this->authChecker->method('isGranted')->willReturn(true); // admin by default in unit tests
 
         $this->processor = new AttendeeStateProcessor(
             $this->persistProcessor,
             $this->dispatcher,
-            $this->hasher
+            $this->hasher,
+            $this->authChecker,
         );
     }
 
