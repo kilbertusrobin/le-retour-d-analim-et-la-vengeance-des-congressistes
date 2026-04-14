@@ -57,6 +57,7 @@ type AuthContextType = {
   user: AuthUser | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
+  loginWithToken: (jwt: string, user: AuthUser) => void;
   logout: () => void;
   updateUser: () => Promise<void>;
 };
@@ -65,6 +66,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   token: null,
   login: async () => {},
+  loginWithToken: () => {},
   logout: () => {},
   updateUser: async () => {},
 });
@@ -104,6 +106,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(me);
   };
 
+  const loginWithToken = (jwt: string, userData: AuthUser) => {
+    localStorage.setItem('token', jwt);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setToken(jwt);
+    setUser(userData);
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -133,7 +142,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, token, login, loginWithToken, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

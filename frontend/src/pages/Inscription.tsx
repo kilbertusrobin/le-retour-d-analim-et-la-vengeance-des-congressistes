@@ -4,9 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import analim from "../assets/images/analim.png";
 import { apiPost } from "../utils/api";
 import { useAuth } from "../context/AuthContext";
+import type { AuthUser } from "../context/AuthContext";
 
 const Inscription = () => {
-  const { login } = useAuth();
+  const { loginWithToken } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ firstName: "", lastName: "", address: "", email: "", password: "", confirm: "" });
   const [error, setError] = useState("");
@@ -21,7 +22,7 @@ const Inscription = () => {
     if (form.password !== form.confirm) { setError("Les mots de passe ne correspondent pas."); return; }
     setLoading(true);
     try {
-      await apiPost('/api/attendees', {
+      const newUser = await apiPost<AuthUser>('/api/attendees', {
         first_name: form.firstName,
         last_name: form.lastName,
         address: form.address,
@@ -29,7 +30,14 @@ const Inscription = () => {
         plainPassword: form.password,
         deposit: 0,
       });
-      await login(form.email, form.password);
+      const authRes = await fetch('http://localhost:8000/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email, password: form.password }),
+      });
+      if (!authRes.ok) throw new Error('Login failed');
+      const { token } = await authRes.json();
+      loginWithToken(token, newUser);
       navigate("/profil");
     } catch (err: unknown) {
       const e = err as { data?: { detail?: string; violations?: { message: string }[] } };
