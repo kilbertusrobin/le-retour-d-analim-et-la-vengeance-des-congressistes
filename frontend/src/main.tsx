@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ToastProvider } from './components/Toast.tsx'
+import { AuthProvider } from './context/AuthContext.tsx'
 import './index.css'
 import App from './App.tsx'
 import Conferences from './pages/Conferences.tsx'
@@ -15,6 +16,7 @@ import Reserver from './pages/Reserver.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <AuthProvider>
     <ToastProvider>
     <BrowserRouter>
       <Routes>
@@ -30,5 +32,6 @@ createRoot(document.getElementById('root')!).render(
       </Routes>
     </BrowserRouter>
     </ToastProvider>
+    </AuthProvider>
   </StrictMode>,
 )

@@ -1,7 +1,12 @@
 import "./Profil.css";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { generateFacture } from "../utils/generateFacture";
+import Navbar from "../partials/Navbar";
+import Footer from "../partials/Footer";
+import { useAuth } from "../context/AuthContext";
+import type { ApiActivity, ApiHotelBooking } from "../context/AuthContext";
+import { apiPatch } from "../utils/api";
 
 const scrollTo = (id: string) => {
   const el = document.getElementById(id);
@@ -9,45 +14,74 @@ const scrollTo = (id: string) => {
   const top = el.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.2;
   window.scrollTo({ top, behavior: "smooth" });
 };
-import Navbar from "../partials/Navbar";
-import Footer from "../partials/Footer";
 
-const user = {
-  prenom: "Jean",
-  nom: "Dupont",
-  email: "jean.dupont@chu-limoges.fr",
-  adresse: "12 avenue du Palais, 87000 Limoges",
-};
-
-const initHotels = [
-  {
-    id: 0,
-    hotel: "Hôtel Royal Limoges",
-    chambre: "Chambre Supérieure",
-    dates: "12 – 15 juin 2025",
-    nuits: 3,
-    prixNuit: 249,
-    pdj: true,
-    prixPdj: 18,
-  },
-];
-
-const initActivites = [
-  { id: 0, nom: "Visite guidée de la Cité de la Céramique", date: "13 juin 2025", prix: 18 },
-  { id: 1, nom: "Atelier gastronomique limousin", date: "14 juin 2025", prix: 55 },
-];
+const CONGRESS_DAYS = 5;
 
 const Profil = () => {
-  const [hotels, setHotels] = useState(initHotels);
-  const [activites, setActivites] = useState(initActivites);
+  const { user, logout, updateUser } = useAuth();
+  const navigate = useNavigate();
   const [confirmAnnul, setConfirmAnnul] = useState<{ type: "hotel" | "activite"; id: number } | null>(null);
 
-  const annulerHotel = (id: number) => setHotels(prev => prev.filter(r => r.id !== id));
-  const annulerActivite = (id: number) => setActivites(prev => prev.filter(a => a.id !== id));
+  if (!user) {
+    navigate("/connexion");
+    return null;
+  }
 
-  const totalHotels = hotels.reduce((acc, r) => acc + r.nuits * (r.prixNuit + (r.pdj ? r.prixPdj : 0)), 0);
-  const totalActivites = activites.reduce((acc, a) => acc + a.prix, 0);
-  const total = totalHotels + totalActivites;
+  const bookings: ApiHotelBooking[] = user.hotel_bookings ?? [];
+  const activites: ApiActivity[] = user.activity_registration ?? [];
+
+  const totalHotel = bookings.reduce((acc, b) =>
+    acc + b.hotel.night_price * b.nights + (b.breakfast ? b.hotel.breakfast_price * b.nights : 0), 0);
+  const totalActivites = activites.reduce((acc, a) => acc + (a.price ?? 0), 0);
+  const total = totalHotel + totalActivites;
+
+  const annulerHotel = async (bookingId: number) => {
+    const remaining = bookings.filter(b => b.id !== bookingId);
+    await apiPatch(`/api/attendees/${user.id}`, {
+      hotel_bookings: remaining.map(b => ({ hotel: `/api/hotels/${b.hotel.id}`, nights: b.nights })),
+    });
+    await updateUser();
+  };
+
+  const annulerActivite = async (actId: number) => {
+    const newIds = activites.filter(a => a.id !== actId).map(a => `/api/activities/${a.id}`);
+    await apiPatch(`/api/attendees/${user.id}`, { activity_registration: newIds });
+    await updateUser();
+  };
+
+  const handleConfirmAnnul = async () => {
+    if (!confirmAnnul) return;
+    if (confirmAnnul.type === "hotel") await annulerHotel(confirmAnnul.id);
+    else await annulerActivite(confirmAnnul.id);
+    setConfirmAnnul(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  const factureUser = { prenom: user.first_name, nom: user.last_name, email: user.email, adresse: user.address };
+  const factureHotels = bookings.map(b => {
+    const arrive = new Date((b.check_in_date ?? "2026-06-08").substring(0, 10) + "T12:00:00");
+    const depart = new Date(arrive);
+    depart.setDate(depart.getDate() + b.nights);
+    const fmt = (d: Date) => d.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+    return {
+      hotel: b.hotel.name,
+      chambre: "Chambre standard",
+      dates: `${fmt(arrive)} – ${fmt(depart)} 2026`,
+      nuits: b.nights,
+      prixNuit: b.hotel.night_price,
+      pdj: b.breakfast,
+      prixPdj: b.hotel.breakfast_price,
+    };
+  });
+  const factureActivites = activites.map(a => ({
+    nom: a.label,
+    date: new Date(a.date_time).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
+    prix: a.price,
+  }));
 
   return (
     <>
@@ -61,11 +95,7 @@ const Profil = () => {
             <p className="profil-modal-sous">Cette action est irréversible.</p>
             <div className="profil-modal-actions">
               <button className="profil-modal-cancel" onClick={() => setConfirmAnnul(null)}>Garder</button>
-              <button className="profil-modal-confirm" onClick={() => {
-                if (confirmAnnul.type === "hotel") annulerHotel(confirmAnnul.id);
-                else annulerActivite(confirmAnnul.id);
-                setConfirmAnnul(null);
-              }}>Confirmer l'annulation</button>
+              <button className="profil-modal-confirm" onClick={handleConfirmAnnul}>Confirmer l'annulation</button>
             </div>
           </div>
         </div>
@@ -74,9 +104,9 @@ const Profil = () => {
       <div className="profil-page">
 
         <aside className="profil-aside">
-          <div className="profil-avatar">{user.prenom[0]}{user.nom[0]}</div>
+          <div className="profil-avatar">{user.first_name[0]}{user.last_name[0]}</div>
           <div className="profil-aside-info">
-            <p className="profil-nom">{user.prenom} {user.nom}</p>
+            <p className="profil-nom">{user.first_name} {user.last_name}</p>
             <p className="profil-email">{user.email}</p>
           </div>
           <div className="profil-divider" />
@@ -86,48 +116,58 @@ const Profil = () => {
             <button className="profil-nav-link" onClick={() => scrollTo("facture")}>Facture</button>
           </nav>
           <div className="profil-divider" />
-          <Link to="/connexion" className="profil-deconnexion">
+          <button className="profil-deconnexion" onClick={handleLogout}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
             </svg>
             Se déconnecter
-          </Link>
+          </button>
         </aside>
 
         <main className="profil-main">
 
           <section className="profil-section" id="reservations">
             <h2 className="profil-section-titre">Hébergement réservé</h2>
-            {hotels.length === 0 ? (
+            {bookings.length === 0 ? (
               <div className="profil-empty">
                 <p className="profil-empty-texte">Aucun hébergement réservé pour l'instant.</p>
                 <Link to="/hotels" className="profil-empty-btn">Trouver un hébergement</Link>
               </div>
             ) : (
               <div className="profil-cards">
-                {hotels.map(r => (
-                  <div key={r.id} className="profil-card">
-                    <div className="profil-card-left">
-                      <div>
-                        <p className="profil-card-titre">{r.hotel}</p>
-                        <p className="profil-card-sous">{r.chambre} · {r.dates}</p>
-                        <div className="profil-card-tags">
-                          <span className="profil-tag">{r.nuits} nuit{r.nuits > 1 ? "s" : ""}</span>
-                          {r.pdj && <span className="profil-tag">Petit déjeuner inclus</span>}
+                {bookings.map(b => {
+                  const prixB = b.hotel.night_price * b.nights + (b.breakfast ? b.hotel.breakfast_price * b.nights : 0);
+                  return (
+                    <div key={b.id} className="profil-card">
+                      <div className="profil-card-left">
+                        <div>
+                          <p className="profil-card-titre">{b.hotel.name}</p>
+                          <p className="profil-card-sous">Chambre standard · {(() => {
+                            if (!b.check_in_date) return `${b.nights} nuit${b.nights > 1 ? "s" : ""}`;
+                            const arrive = new Date(b.check_in_date.substring(0, 10) + "T12:00:00");
+                            const depart = new Date(arrive);
+                            depart.setDate(depart.getDate() + b.nights);
+                            const fmt = (d: Date) => d.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+                            return `${fmt(arrive)} – ${fmt(depart)} 2026`;
+                          })()}</p>
+                          <div className="profil-card-tags">
+                            <span className="profil-tag">{b.nights} nuit{b.nights > 1 ? "s" : ""}</span>
+                            {b.breakfast && <span className="profil-tag">Petit déjeuner inclus</span>}
+                          </div>
                         </div>
                       </div>
+                      <div className="profil-card-right">
+                        <div className="profil-card-prix">{prixB} €</div>
+                        <button className="profil-annuler" onClick={() => setConfirmAnnul({ type: "hotel", id: b.id })}>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                          </svg>
+                          Annuler
+                        </button>
+                      </div>
                     </div>
-                    <div className="profil-card-right">
-                      <div className="profil-card-prix">{r.nuits * (r.prixNuit + (r.pdj ? r.prixPdj : 0))} €</div>
-                      <button className="profil-annuler" onClick={() => setConfirmAnnul({ type: "hotel", id: r.id })}>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                        </svg>
-                        Annuler
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </section>
@@ -145,12 +185,14 @@ const Profil = () => {
                   <div key={a.id} className="profil-card">
                     <div className="profil-card-left">
                       <div>
-                        <p className="profil-card-titre">{a.nom}</p>
-                        <p className="profil-card-sous">{a.date}</p>
+                        <p className="profil-card-titre">{a.label}</p>
+                        <p className="profil-card-sous">
+                          {new Date(a.date_time).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+                        </p>
                       </div>
                     </div>
                     <div className="profil-card-right">
-                      <div className="profil-card-prix">{a.prix} €</div>
+                      <div className="profil-card-prix">{a.price} €</div>
                       <button className="profil-annuler" onClick={() => setConfirmAnnul({ type: "activite", id: a.id })}>
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -173,10 +215,10 @@ const Profil = () => {
               <div className="profil-total-montant">{total} €</div>
             </div>
             <div className="profil-total-detail">
-              <span>Hébergement <strong>{totalHotels} €</strong></span>
+              <span>Hébergement ({CONGRESS_DAYS} nuits) <strong>{totalHotel} €</strong></span>
               <span>Activités <strong>{totalActivites} €</strong></span>
             </div>
-            <button className="profil-facture-btn" onClick={() => generateFacture(user, hotels, activites)}>
+            <button className="profil-facture-btn" onClick={() => generateFacture(factureUser, factureHotels, factureActivites)}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
               </svg>

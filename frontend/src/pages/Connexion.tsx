@@ -1,8 +1,31 @@
 import "./auth.css";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import analim from "../assets/images/analim.png";
+import { useAuth } from "../context/AuthContext";
 
 const Connexion = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      await login(email, password);
+      navigate("/profil");
+    } catch {
+      setError("Email ou mot de passe incorrect.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="auth-page">
       <div className="auth-card">
@@ -15,16 +38,21 @@ const Connexion = () => {
           </div>
         </div>
 
-        <form className="auth-form" onSubmit={(e) => e.preventDefault()}>
+        <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-field">
             <label className="auth-label">Adresse e-mail</label>
-            <input type="email" className="auth-input" placeholder="vous@exemple.fr" />
+            <input type="email" className="auth-input" placeholder="vous@exemple.fr"
+              value={email} onChange={e => setEmail(e.target.value)} required />
           </div>
           <div className="auth-field">
             <label className="auth-label">Mot de passe</label>
-            <input type="password" className="auth-input" placeholder="••••••••" />
+            <input type="password" className="auth-input" placeholder="••••••••"
+              value={password} onChange={e => setPassword(e.target.value)} required />
           </div>
-          <button type="submit" className="auth-submit">Se connecter</button>
+          {error && <p className="auth-error">{error}</p>}
+          <button type="submit" className="auth-submit" disabled={loading}>
+            {loading ? "Connexion…" : "Se connecter"}
+          </button>
         </form>
 
         <div className="auth-divider" />

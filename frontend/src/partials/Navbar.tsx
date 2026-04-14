@@ -5,9 +5,11 @@ import "./Navbar.css";
 import analim from "../assets/images/analim.png";
 import BtnVert from "../components/BtnVert";
 import BtnBleu from "../components/BtnBleu";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { pathname } = useLocation();
+  const { user } = useAuth();
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [pastHero, setPastHero] = useState(false);
@@ -35,8 +37,11 @@ const Navbar = () => {
         </div>
         <div className="btn-wrapper">
           <BtnVert text="+33 6 12 34 56 78" lien="tel:+33612345678" />
-          <BtnBleu text="Se connecter" lien="/connexion" />
-          <BtnBleu text="Mon profil" lien="/profil" />
+          {user ? (
+            <BtnBleu text="Mon profil" lien="/profil" />
+          ) : (
+            <BtnBleu text="Se connecter" lien="/connexion" />
+          )}
         </div>
       </nav>
     </LayoutMaxed>

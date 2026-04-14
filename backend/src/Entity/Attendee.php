@@ -86,9 +86,12 @@ class Attendee implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['attendee:read', 'attendee:write'])]
     private ?float $deposit = null;
 
-    #[ORM\ManyToOne(inversedBy: 'attendees')]
+    /**
+     * @var Collection<int, AttendeeHotel>
+     */
+    #[ORM\OneToMany(targetEntity: AttendeeHotel::class, mappedBy: 'attendee', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups(['attendee:read', 'attendee:write'])]
-    private ?Hotel $hotel = null;
+    private Collection $hotel_bookings;
 
     #[ORM\Column]
     #[Groups(['attendee:read', 'attendee:write'])]
@@ -131,6 +134,7 @@ class Attendee implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
+        $this->hotel_bookings = new ArrayCollection();
         $this->session_registration = new ArrayCollection();
         $this->activity_registration = new ArrayCollection();
         $this->invoices = new ArrayCollection();
@@ -179,9 +183,23 @@ class Attendee implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setDeposit(float $deposit): static { $this->deposit = $deposit; return $this; }
 
-    public function getHotel(): ?Hotel { return $this->hotel; }
+    /** @return Collection<int, AttendeeHotel> */
+    public function getHotelBookings(): Collection { return $this->hotel_bookings; }
 
-    public function setHotel(?Hotel $hotel): static { $this->hotel = $hotel; return $this; }
+    public function addHotelBooking(AttendeeHotel $booking): static
+    {
+        if (!$this->hotel_bookings->contains($booking)) {
+            $this->hotel_bookings->add($booking);
+            $booking->setAttendee($this);
+        }
+        return $this;
+    }
+
+    public function removeHotelBooking(AttendeeHotel $booking): static
+    {
+        $this->hotel_bookings->removeElement($booking);
+        return $this;
+    }
 
     public function isBreakfast(): ?bool { return $this->breakfast; }
 

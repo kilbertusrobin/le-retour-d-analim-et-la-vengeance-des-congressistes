@@ -64,16 +64,19 @@ class Hotel
     #[Groups(['hotel:read', 'hotel:write', 'attendee:read', 'invoice:read'])]
     private ?float $breakfast_price = null;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['hotel:read', 'hotel:write'])]
+    private ?string $description = null;
+
     /**
      * @var Collection<int, Attendee>
      */
-    #[ORM\OneToMany(targetEntity: Attendee::class, mappedBy: 'hotel')]
-    #[Groups(['hotel:read'])]
-    private Collection $attendees;
+    #[ORM\OneToMany(targetEntity: AttendeeHotel::class, mappedBy: 'hotel')]
+    private Collection $attendeeBookings;
 
     public function __construct()
     {
-        $this->attendees = new ArrayCollection();
+        $this->attendeeBookings = new ArrayCollection();
     }
 
     public function getId(): ?int { return $this->id; }
@@ -98,25 +101,10 @@ class Hotel
 
     public function setBreakfastPrice(float $breakfast_price): static { $this->breakfast_price = $breakfast_price; return $this; }
 
-    /** @return Collection<int, Attendee> */
-    public function getAttendees(): Collection { return $this->attendees; }
+    public function getDescription(): ?string { return $this->description; }
 
-    public function addAttendee(Attendee $attendee): static
-    {
-        if (!$this->attendees->contains($attendee)) {
-            $this->attendees->add($attendee);
-            $attendee->setHotel($this);
-        }
-        return $this;
-    }
+    public function setDescription(?string $description): static { $this->description = $description; return $this; }
 
-    public function removeAttendee(Attendee $attendee): static
-    {
-        if ($this->attendees->removeElement($attendee)) {
-            if ($attendee->getHotel() === $this) {
-                $attendee->setHotel(null);
-            }
-        }
-        return $this;
-    }
+    /** @return Collection<int, AttendeeHotel> */
+    public function getAttendeeBookings(): Collection { return $this->attendeeBookings; }
 }

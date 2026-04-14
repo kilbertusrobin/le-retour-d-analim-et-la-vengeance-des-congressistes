@@ -1,5 +1,5 @@
 import "./Hotels.css";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
@@ -13,75 +13,19 @@ import Faq from "../components/Faq";
 import Footer from "../partials/Footer";
 import BtnBleu from "../components/BtnBleu";
 import BtnVert from "../components/BtnVert";
+import type { ApiHotel } from "../context/AuthContext";
+import { apiGet } from "../utils/api";
 
-const hotels = [
-  {
-    nom: "Hôtel Royal Limoges",
-    etoiles: 5,
-    lieu: "Centre-ville, Limoges",
-    prix: 189,
-    images: [
-      "https://picsum.photos/seed/h1a/600/400",
-      "https://picsum.photos/seed/h1b/600/400",
-      "https://picsum.photos/seed/h1c/600/400",
-    ],
-  },
-  {
-    nom: "Mercure Limoges Centre",
-    etoiles: 4,
-    lieu: "Quartier des Bénédictins, Limoges",
-    prix: 129,
-    images: [
-      "https://picsum.photos/seed/h2a/600/400",
-      "https://picsum.photos/seed/h2b/600/400",
-      "https://picsum.photos/seed/h2c/600/400",
-    ],
-  },
-  {
-    nom: "Novotel Limoges",
-    etoiles: 4,
-    lieu: "Près du Palais des Congrès",
-    prix: 115,
-    images: [
-      "https://picsum.photos/seed/h3a/600/400",
-      "https://picsum.photos/seed/h3b/600/400",
-      "https://picsum.photos/seed/h3c/600/400",
-    ],
-  },
-  {
-    nom: "Ibis Limoges Centre",
-    etoiles: 3,
-    lieu: "Gare de Limoges",
-    prix: 79,
-    images: [
-      "https://picsum.photos/seed/h4a/600/400",
-      "https://picsum.photos/seed/h4b/600/400",
-      "https://picsum.photos/seed/h4c/600/400",
-    ],
-  },
-  {
-    nom: "Best Western Le Richelieu",
-    etoiles: 3,
-    lieu: "Bords de Vienne, Limoges",
-    prix: 95,
-    images: [
-      "https://picsum.photos/seed/h5a/600/400",
-      "https://picsum.photos/seed/h5b/600/400",
-      "https://picsum.photos/seed/h5c/600/400",
-    ],
-  },
-  {
-    nom: "Villa Margot",
-    etoiles: 4,
-    lieu: "Quartier Montjovis, Limoges",
-    prix: 145,
-    images: [
-      "https://picsum.photos/seed/h6a/600/400",
-      "https://picsum.photos/seed/h6b/600/400",
-      "https://picsum.photos/seed/h6c/600/400",
-    ],
-  },
+type HydraCollection<T> = { 'member': T[] };
+
+const HOTEL_IMAGES: Record<number, string[]> = {};
+const getImages = (id: number) => HOTEL_IMAGES[id] ?? [
+  `https://picsum.photos/seed/h${id}a/600/400`,
+  `https://picsum.photos/seed/h${id}b/600/400`,
+  `https://picsum.photos/seed/h${id}c/600/400`,
 ];
+
+const parseStars = (category: string) => parseInt(category) || 0;
 
 const Etoiles = ({ n }: { n: number }) => (
   <div className="hotel-etoiles">
@@ -91,10 +35,11 @@ const Etoiles = ({ n }: { n: number }) => (
   </div>
 );
 
-const HotelCard = ({ h, index }: { h: typeof hotels[0]; index: number }) => {
+const HotelCard = ({ h }: { h: ApiHotel }) => {
   const swiperRef = useRef<SwiperType | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
+  const images = getImages(h.id);
 
   const updateState = (s: SwiperType) => {
     setIsBeginning(s.isBeginning);
@@ -111,9 +56,9 @@ const HotelCard = ({ h, index }: { h: typeof hotels[0]; index: number }) => {
           onSlideChange={(s) => updateState(s)}
           className="hotel-swiper"
         >
-          {h.images.map((src, j) => (
+          {images.map((src, j) => (
             <SwiperSlide key={j}>
-              <img src={src} alt={h.nom} className="conf-card-img" />
+              <img src={src} alt={h.name} className="conf-card-img" />
             </SwiperSlide>
           ))}
         </Swiper>
@@ -129,23 +74,33 @@ const HotelCard = ({ h, index }: { h: typeof hotels[0]; index: number }) => {
         </button>
       </div>
       <div className="conf-card-body">
-        <Etoiles n={h.etoiles} />
-        <h3 className="conf-card-sujet">{h.nom}</h3>
+        <Etoiles n={parseStars(h.category)} />
+        <h3 className="conf-card-sujet">{h.name}</h3>
         <p className="hotel-lieu">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
             <circle cx="12" cy="10" r="3" />
           </svg>
-          {h.lieu}
+          {h.address}
         </p>
-        <p className="hotel-prix">À partir de <strong>{h.prix} €</strong> / nuit</p>
-        <BtnBleu text="Voir l'hôtel" lien={`/hotels/${index}`} />
+        <p className="hotel-prix">À partir de <strong>{h.night_price} €</strong> / nuit</p>
+        <BtnBleu text="Voir l'hôtel" lien={`/hotels/${h.id}`} />
       </div>
     </div>
   );
 };
 
 const Hotels = () => {
+  const [hotels, setHotels] = useState<ApiHotel[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    apiGet<HydraCollection<ApiHotel>>('/api/hotels')
+      .then(data => setHotels(data['member'] ?? []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <>
       <Navbar />
@@ -164,9 +119,11 @@ const Hotels = () => {
       <Reassurances />
 
       <section className="hotels-grid">
-        {hotels.map((h, i) => (
-          <HotelCard key={i} h={h} index={i} />
-        ))}
+        {loading ? (
+          <p style={{ gridColumn: '1/-1', textAlign: 'center', color: '#888', padding: '40px' }}>Chargement des hôtels…</p>
+        ) : (
+          hotels.map(h => <HotelCard key={h.id} h={h} />)
+        )}
       </section>
 
       <Avis />

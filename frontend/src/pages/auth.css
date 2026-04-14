@@ -163,3 +163,13 @@
     background: #f0f0f0;
     margin: 0 -4px;
 }
+
+.auth-error {
+    color: #dc2626;
+    font-size: 0.85rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 0;
+}

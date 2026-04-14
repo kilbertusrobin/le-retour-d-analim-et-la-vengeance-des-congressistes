@@ -528,6 +528,61 @@
     pointer-events: none;
 }
 
+.reserv-confirm-btn--already {
+    background: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.reserv-confirm-btn--already:hover {
+    background: #6b7280;
+}
+
+.reserv-confirm-btn--replace {
+    background: #e05c00;
+}
+
+.reserv-confirm-btn--replace:hover {
+    background: #c04f00;
+}
+
+.reserv-dates-bloquees {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.reserv-dates-bloquees--other {
+    background: #fff4e5;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.reserv-dates-bloquees--same {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+.reserv-replace-warning {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    margin-top: 12px;
+}
+
 /* Lightbox */
 .lightbox-overlay {
     position: fixed;

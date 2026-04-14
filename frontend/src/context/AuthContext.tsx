@@ -1,0 +1,136 @@
+import { createContext, useContext, useEffect, useState } from 'react';
+import { apiFetch, apiPost } from '../utils/api';
+
+export type ApiHotel = {
+  id: number;
+  name: string;
+  address: string;
+  category: string;
+  night_price: number;
+  breakfast_price: number;
+  description?: string;
+};
+
+export type ApiHotelBooking = {
+  id: number;
+  hotel: ApiHotel;
+  nights: number;
+  breakfast: boolean;
+  check_in_date: string | null;
+};
+
+export type ApiActivity = {
+  id: number;
+  label: string;
+  date_time: string;
+  price: number;
+  description?: string;
+  category?: string;
+  duration?: string;
+};
+
+export type ApiSession = {
+  id: number;
+  label: string;
+  start_date: string;
+  duration_half_days: number;
+  price: number;
+  max_attendees?: number;
+  attendees?: { id: number }[];
+};
+
+export type AuthUser = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  address: string;
+  breakfast: boolean;
+  deposit: number;
+  roles: string[];
+  hotel_bookings: ApiHotelBooking[];
+  activity_registration: ApiActivity[];
+  session_registration: ApiSession[];
+};
+
+type AuthContextType = {
+  user: AuthUser | null;
+  token: string | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+  updateUser: () => Promise<void>;
+};
+
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  token: null,
+  login: async () => {},
+  logout: () => {},
+  updateUser: async () => {},
+});
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
+  const [user, setUser] = useState<AuthUser | null>(() => {
+    try {
+      const raw = localStorage.getItem('user');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const fetchMe = async (jwt: string): Promise<AuthUser> => {
+    const res = await fetch('http://localhost:8000/api/me', {
+      headers: { Authorization: `Bearer ${jwt}`, 'Content-Type': 'application/json' },
+    });
+    if (!res.ok) throw new Error('Failed to fetch user');
+    return res.json();
+  };
+
+  const login = async (email: string, password: string) => {
+    const data = await apiPost<{ token: string }>('/api/auth', { email, password });
+    const jwt = data.token;
+    localStorage.setItem('token', jwt);
+    setToken(jwt);
+    const me = await fetchMe(jwt);
+    localStorage.setItem('user', JSON.stringify(me));
+    setUser(me);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
+  };
+
+  const updateUser = async () => {
+    if (!token) return;
+    try {
+      const me = await fetchMe(token);
+      localStorage.setItem('user', JSON.stringify(me));
+      setUser(me);
+    } catch {
+      logout();
+    }
+  };
+
+  // Revalidate token on mount
+  useEffect(() => {
+    if (token && !user) {
+      fetchMe(token).then(me => {
+        localStorage.setItem('user', JSON.stringify(me));
+        setUser(me);
+      }).catch(logout);
+    }
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ user, token, login, logout, updateUser }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => useContext(AuthContext);
