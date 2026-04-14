@@ -89,7 +89,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const login = async (email: string, password: string) => {
-    const data = await apiPost<{ token: string }>('/api/auth', { email, password });
+    const res = await fetch('http://localhost:8000/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    if (!res.ok) throw new Error('Login failed');
+    const data: { token: string } = await res.json();
     const jwt = data.token;
     localStorage.setItem('token', jwt);
     setToken(jwt);
