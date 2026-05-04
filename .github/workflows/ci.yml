@@ -40,11 +40,6 @@ jobs:
           APP_ENV: test
           JWT_PASSPHRASE: analim-jwt-passphrase
 
-      - name: Create test database
-        run: php bin/console doctrine:database:create --if-not-exists
-        env:
-          APP_ENV: test
-
       - name: Run migrations
         run: php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
         env:
