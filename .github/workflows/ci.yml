@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-scripts
 
+      - name: Create .env
+        run: echo "APP_ENV=test" > .env
+
       - name: Generate JWT keypair
         run: php bin/console lexik:jwt:generate-keypair --no-interaction
         env:
