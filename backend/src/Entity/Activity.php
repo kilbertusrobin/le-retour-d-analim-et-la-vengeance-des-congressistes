@@ -50,8 +50,20 @@ class Activity
     #[ORM\Column]
     #[Assert\NotNull]
     #[Assert\Positive(message: "Le prix de l'activité doit être positif.")]
-    #[Groups(['activity:read', 'activity:write', 'invoice:read'])]
+    #[Groups(['activity:read', 'activity:write', 'invoice:read', 'attendee:read'])]
     private ?int $price = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['activity:read', 'activity:write'])]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['activity:read', 'activity:write', 'attendee:read'])]
+    private ?string $category = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['activity:read', 'activity:write'])]
+    private ?string $duration = null;
 
     /**
      * @var Collection<int, Attendee>
@@ -78,6 +90,18 @@ class Activity
     public function getPrice(): ?int { return $this->price; }
 
     public function setPrice(int $price): static { $this->price = $price; return $this; }
+
+    public function getDescription(): ?string { return $this->description; }
+
+    public function setDescription(?string $description): static { $this->description = $description; return $this; }
+
+    public function getCategory(): ?string { return $this->category; }
+
+    public function setCategory(?string $category): static { $this->category = $category; return $this; }
+
+    public function getDuration(): ?string { return $this->duration; }
+
+    public function setDuration(?string $duration): static { $this->duration = $duration; return $this; }
 
     /** @return Collection<int, Attendee> */
     public function getAttendees(): Collection { return $this->attendees; }

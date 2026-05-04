@@ -1,0 +1,702 @@
+.single-header-spacer {
+    height: 80px;
+}
+
+.single-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    padding: 40px 80px 20px 80px;
+}
+
+.single-hero {
+    display: grid;
+    grid-template-columns: 650px 1fr;
+    gap: 60px;
+    padding: 0 80px 60px 80px;
+    align-items: flex-start;
+}
+
+/* Swiper */
+.single-swiper-wrapper {
+    width: 650px;
+    height: 460px;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.single-swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.single-swiper-img {
+    width: 100%;
+    height: 460px;
+    object-fit: cover;
+}
+
+.single-swiper .swiper-pagination-bullet {
+    background-color: #ffffff;
+    opacity: 0.5;
+}
+
+.single-swiper .swiper-pagination-bullet-active {
+    background-color: #ffffff;
+    opacity: 1;
+}
+
+/* Info panel */
+.single-info {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 8px;
+}
+
+.single-etoiles {
+    display: flex;
+    gap: 2px;
+    font-size: 16px;
+}
+
+.single-titre {
+    font-size: 32px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.single-lieu {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.5);
+    margin: 0;
+}
+
+.single-texte {
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(0, 0, 0, 0.6);
+    margin: 0;
+    max-width: 480px;
+}
+
+/* Chambres section */
+.single-chambres {
+    padding: 0 80px 80px 80px;
+}
+
+.single-chambres::before {
+    content: '';
+    display: block;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    margin: 0 0 40px 0;
+}
+
+.single-chambres-titre {
+    font-size: 28px;
+    font-weight: 700;
+    color: #000;
+    margin: 0 0 24px 0;
+}
+
+.single-chambres-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.chambre-card {
+    border-radius: 14px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+}
+
+.chambre-card-img-wrapper {
+    width: 280px;
+    flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.chambre-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.chambre-card-img-wrapper:hover .chambre-card-img {
+    transform: scale(1.04);
+}
+
+.chambre-card-img-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.chambre-card-img-wrapper:hover .chambre-card-img-overlay {
+    opacity: 1;
+}
+
+.chambre-card-body {
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0;
+}
+
+.chambre-card-top {
+    flex: 1;
+}
+
+.chambre-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chambre-card-nom {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+}
+
+.chambre-card-desc {
+    font-size: 14px;
+    line-height: 1.65;
+    color: rgba(0, 0, 0, 0.55);
+    margin: 0;
+}
+
+.chambre-card-meta {
+    display: flex;
+    gap: 20px;
+    margin-top: 4px;
+}
+
+.chambre-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.chambre-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* Petit déjeuner checkbox */
+.chambre-pdj {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.chambre-pdj-input {
+    display: none;
+}
+
+.chambre-pdj-box {
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    border: 1.5px solid #d0d0d0;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.chambre-pdj-input:checked + .chambre-pdj-box {
+    background-color: #01b285;
+    border-color: #01b285;
+}
+
+.chambre-pdj-label {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+}
+
+.chambre-pdj-prix {
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.4);
+    margin-left: 4px;
+}
+
+/* Prix + bouton */
+.chambre-card-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.chambre-card-prix {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+}
+
+.chambre-prix-label {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.chambre-card-prix strong {
+    color: #000;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.chambre-prix-nuit {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+/* Reservation Modal */
+.reserv-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reserv-modal {
+    background: #fff;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.reserv-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 24px 24px 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.reserv-modal-chambre {
+    font-size: 17px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+}
+
+.reserv-modal-hotel {
+    font-size: 13px;
+    color: rgba(0,0,0,0.4);
+    margin: 3px 0 0;
+}
+
+.reserv-modal-close {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: rgba(0,0,0,0.35);
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.15s ease;
+    outline: none;
+}
+
+.reserv-modal-close:hover {
+    color: #000;
+}
+
+.reserv-modal-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.reserv-dates-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.reserv-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.reserv-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.reserv-input {
+    padding: 10px 12px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    color: #000;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.reserv-input:focus {
+    border-color: #01b285;
+}
+
+.reserv-arrow {
+    font-size: 16px;
+    color: rgba(0,0,0,0.2);
+    padding-bottom: 10px;
+}
+
+.reserv-nuits-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8f8f8;
+    border-radius: 10px;
+    padding: 12px 16px;
+}
+
+.reserv-nuits-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(0,0,0,0.55);
+}
+
+.reserv-nuits-counter {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.reserv-nuits-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid #d0d0d0;
+    background: #fff;
+    font-size: 17px;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #000;
+    padding: 0;
+    line-height: 1;
+    transition: border-color 0.15s, color 0.15s;
+    outline: none;
+}
+
+.reserv-nuits-btn:hover {
+    border-color: #01b285;
+    color: #01b285;
+}
+
+.reserv-nuits-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+    pointer-events: none;
+}
+
+.reserv-nuits-val {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+    min-width: 56px;
+    text-align: center;
+}
+
+.reserv-pdj-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #01b285;
+    font-weight: 500;
+    margin: 0;
+}
+
+.reserv-modal-footer {
+    padding: 20px 24px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.reserv-total {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.reserv-total-label {
+    font-size: 11px;
+    color: rgba(0,0,0,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.reserv-total-montant {
+    font-size: 22px;
+    font-weight: 700;
+    color: #000;
+    line-height: 1;
+}
+
+.reserv-total-detail {
+    font-size: 11px;
+    color: rgba(0,0,0,0.35);
+}
+
+.reserv-confirm-btn {
+    padding: 12px 20px;
+    background: #01b285;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s ease, opacity 0.2s ease;
+    white-space: nowrap;
+    outline: none;
+}
+
+.reserv-confirm-btn:hover {
+    background: #018e6f;
+}
+
+.reserv-confirm-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+    pointer-events: none;
+}
+
+.reserv-confirm-btn--already {
+    background: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.reserv-confirm-btn--already:hover {
+    background: #6b7280;
+}
+
+.reserv-confirm-btn--replace {
+    background: #e05c00;
+}
+
+.reserv-confirm-btn--replace:hover {
+    background: #c04f00;
+}
+
+.reserv-dates-bloquees {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.reserv-dates-bloquees--other {
+    background: #fff4e5;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.reserv-dates-bloquees--same {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+.reserv-replace-warning {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    margin-top: 12px;
+}
+
+/* Lightbox */
+.lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    outline: none;
+    z-index: 10;
+    color: #fff;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    outline: none;
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.lightbox-nav--prev { left: 24px; }
+.lightbox-nav--next { right: 24px; }
+
+.lightbox-nav--disabled {
+    opacity: 0.2;
+    cursor: default;
+    pointer-events: none;
+}
+
+.lightbox-img-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: calc(100vw - 160px);
+}
+
+.lightbox-img {
+    max-width: 100%;
+    max-height: calc(100vh - 200px);
+    border-radius: 10px;
+    object-fit: contain;
+    display: block;
+}
+
+.lightbox-counter {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.lightbox-thumbs {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+.lightbox-thumb {
+    width: 56px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0.4;
+    transition: opacity 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.lightbox-thumb:hover {
+    opacity: 0.7;
+}
+
+.lightbox-thumb--active {
+    opacity: 1;
+    border-color: #fff;
+}

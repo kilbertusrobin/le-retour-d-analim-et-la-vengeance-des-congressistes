@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Activity;
 use App\Entity\Attendee;
+use App\Entity\AttendeeHotel;
 use App\Entity\Hotel;
 use App\Entity\Invoice;
 use App\Entity\Payment;
@@ -38,10 +39,10 @@ class AppFixtures extends Fixture
 
         // ── Hotels ────────────────────────────────────────────────────────────
         $hotelsData = [
-            ['name' => 'Ibis Limoges Centre', 'address' => '2 place Jourdan, 87000 Limoges', 'category' => '2 étoiles', 'night' => 65.0, 'breakfast' => 10.0],
-            ['name' => 'Hôtel Mercure Limoges', 'address' => '29 place Wilson, 87000 Limoges', 'category' => '3 étoiles', 'night' => 95.0, 'breakfast' => 15.0],
-            ['name' => 'Royal Limousin', 'address' => '1 place de la République, 87000 Limoges', 'category' => '4 étoiles', 'night' => 140.0, 'breakfast' => 20.0],
-            ['name' => 'Résidence Les Lilas', 'address' => '8 rue Montmailler, 87000 Limoges', 'category' => '1 étoile', 'night' => 45.0, 'breakfast' => 7.0],
+            ['name' => 'Ibis Limoges Centre', 'address' => '2 place Jourdan, 87000 Limoges', 'category' => '2 étoiles', 'night' => 65.0, 'breakfast' => 10.0, 'description' => 'Hôtel économique idéalement situé à deux pas de la gare de Limoges. Chambres fonctionnelles et confortables, parfaites pour les congressistes souhaitant maîtriser leur budget sans sacrifier la praticité.'],
+            ['name' => 'Hôtel Mercure Limoges', 'address' => '29 place Wilson, 87000 Limoges', 'category' => '3 étoiles', 'night' => 95.0, 'breakfast' => 15.0, 'description' => 'Au cœur du centre historique de Limoges, cet hôtel propose des chambres modernes avec vue sur la place Wilson. Service attentionné et restaurant gastronomique sur place.'],
+            ['name' => 'Royal Limousin', 'address' => '1 place de la République, 87000 Limoges', 'category' => '4 étoiles', 'night' => 140.0, 'breakfast' => 20.0, 'description' => 'Palace emblématique de Limoges, le Royal Limousin offre une expérience haut de gamme à deux pas du Palais des Congrès. Spa, piscine intérieure et suites luxueuses pour un séjour d\'exception.'],
+            ['name' => 'Résidence Les Lilas', 'address' => '8 rue Montmailler, 87000 Limoges', 'category' => '1 étoile', 'night' => 45.0, 'breakfast' => 7.0, 'description' => 'Résidence hôtelière paisible dans un quartier résidentiel de Limoges. Studios équipés avec kitchenette, idéals pour les séjours prolongés. Accès facile au centre-ville par les transports en commun.'],
         ];
         $hotels = [];
         foreach ($hotelsData as $data) {
@@ -50,23 +51,24 @@ class AppFixtures extends Fixture
                 ->setAddress($data['address'])
                 ->setCategory($data['category'])
                 ->setNightPrice($data['night'])
-                ->setBreakfastPrice($data['breakfast']);
+                ->setBreakfastPrice($data['breakfast'])
+                ->setDescription($data['description']);
             $manager->persist($hotel);
             $hotels[] = $hotel;
         }
 
         // ── Sessions ──────────────────────────────────────────────────────────
         $sessionsData = [
-            ['label' => 'Tennis et stratégie', 'day' => 0, 'half' => 'am', 'price' => 80],
-            ['label' => 'Football féminin : vers la professionnalisation', 'day' => 0, 'half' => 'pm', 'price' => 80],
-            ['label' => 'Équipement du bowling', 'day' => 1, 'half' => 'am', 'price' => 60],
-            ['label' => 'Tennis en fauteuil roulant', 'day' => 1, 'half' => 'pm', 'price' => 60],
-            ['label' => 'Finance des ligues sportives', 'day' => 2, 'half' => 'am', 'price' => 100],
-            ['label' => 'Gestion des bénévoles', 'day' => 2, 'half' => 'pm', 'price' => 100],
-            ['label' => 'Sport et handicap', 'day' => 3, 'half' => 'am', 'price' => 80],
-            ['label' => 'Communication digitale pour les ligues', 'day' => 3, 'half' => 'pm', 'price' => 80],
-            ['label' => 'Droit du sport', 'day' => 4, 'half' => 'am', 'price' => 120],
-            ['label' => 'Clôture : perspectives 2027', 'day' => 4, 'half' => 'pm', 'price' => 50],
+            ['label' => 'Tennis et stratégie', 'day' => 0, 'half' => 'am', 'price' => 80, 'max' => 120],
+            ['label' => 'Football féminin : vers la professionnalisation', 'day' => 0, 'half' => 'pm', 'price' => 80, 'max' => 80],
+            ['label' => 'Équipement du bowling', 'day' => 1, 'half' => 'am', 'price' => 60, 'max' => 60],
+            ['label' => 'Tennis en fauteuil roulant', 'day' => 1, 'half' => 'pm', 'price' => 60, 'max' => 50],
+            ['label' => 'Finance des ligues sportives', 'day' => 2, 'half' => 'am', 'price' => 100, 'max' => 100],
+            ['label' => 'Gestion des bénévoles', 'day' => 2, 'half' => 'pm', 'price' => 100, 'max' => 90],
+            ['label' => 'Sport et handicap', 'day' => 3, 'half' => 'am', 'price' => 80, 'max' => 150],
+            ['label' => 'Communication digitale pour les ligues', 'day' => 3, 'half' => 'pm', 'price' => 80, 'max' => 200],
+            ['label' => 'Droit du sport', 'day' => 4, 'half' => 'am', 'price' => 120, 'max' => 70],
+            ['label' => 'Clôture : perspectives 2027', 'day' => 4, 'half' => 'pm', 'price' => 50, 'max' => 300],
         ];
         $sessions = [];
         $congressStart = new \DateTime(self::CONGRESS_START);
@@ -77,21 +79,22 @@ class AppFixtures extends Fixture
                 ->setLabel($data['label'])
                 ->setStartDate($date)
                 ->setDurationHalfDays(1)
-                ->setPrice($data['price']);
+                ->setPrice($data['price'])
+                ->setMaxAttendees($data['max']);
             $manager->persist($session);
             $sessions[] = $session;
         }
 
         // ── Activities ───────────────────────────────────────────────────────
         $activitiesData = [
-            ['label' => 'Visite de la cathédrale Saint-Étienne', 'day' => 0, 'hour' => 18, 'price' => 15],
-            ['label' => 'Concert de jazz au Zénith de Limoges', 'day' => 1, 'hour' => 20, 'price' => 35],
-            ['label' => 'Excursion aux Gorges de la Vézère', 'day' => 2, 'hour' => 9, 'price' => 45],
-            ['label' => 'Atelier porcelaine de Limoges', 'day' => 2, 'hour' => 17, 'price' => 30],
-            ['label' => 'Spectacle son et lumière — Château de Chalusset', 'day' => 3, 'hour' => 21, 'price' => 25],
-            ['label' => 'Visite du musée des Beaux-Arts', 'day' => 1, 'hour' => 16, 'price' => 10],
-            ['label' => 'Randonnée sur les chemins de Saint-Jacques', 'day' => 4, 'hour' => 8, 'price' => 20],
-            ['label' => 'Dîner gala de clôture', 'day' => 4, 'hour' => 19, 'price' => 65],
+            ['label' => 'Visite de la cathédrale Saint-Étienne', 'day' => 0, 'hour' => 18, 'price' => 15, 'category' => 'Culture', 'duration' => '1h30', 'description' => 'Explorez ce chef-d\'œuvre gothique du XIIIe siècle, ses vitraux exceptionnels et son jubé Renaissance, accompagné d\'un guide conférencier passionné.'],
+            ['label' => 'Concert de jazz au Zénith de Limoges', 'day' => 1, 'hour' => 20, 'price' => 35, 'category' => 'Divertissement', 'duration' => '2h', 'description' => 'Une soirée musicale exceptionnelle avec des artistes de renom dans le cadre chaleureux du Zénith de Limoges. Jazz contemporain et standards revisités.'],
+            ['label' => 'Excursion aux Gorges de la Vézère', 'day' => 2, 'hour' => 9, 'price' => 45, 'category' => 'Nature', 'duration' => '4h', 'description' => 'Partez à la découverte des paysages sauvages des gorges de la Vézère. Randonnée guidée avec arrêts panoramiques et pique-nique local inclus.'],
+            ['label' => 'Atelier porcelaine de Limoges', 'day' => 2, 'hour' => 17, 'price' => 30, 'category' => 'Culture', 'duration' => '2h', 'description' => 'Initiez-vous à l\'art de la porcelaine de Limoges avec un maître artisan. Façonnez et décorez votre propre pièce que vous pourrez emporter en souvenir.'],
+            ['label' => 'Spectacle son et lumière — Château de Chalusset', 'day' => 3, 'hour' => 21, 'price' => 25, 'category' => 'Divertissement', 'duration' => '1h30', 'description' => 'Plongez dans l\'histoire médiévale du Limousin lors de ce spectacle nocturne époustouflant au château de Chalusset. Projections, musique et narration immersive.'],
+            ['label' => 'Visite du musée des Beaux-Arts', 'day' => 1, 'hour' => 16, 'price' => 10, 'category' => 'Culture', 'duration' => '1h30', 'description' => 'Découvrez les collections permanentes du musée municipal : peintures flamandes, émaux limousins et sculptures du XVIIIe siècle dans un palais épiscopal restauré.'],
+            ['label' => 'Randonnée sur les chemins de Saint-Jacques', 'day' => 4, 'hour' => 8, 'price' => 20, 'category' => 'Nature', 'duration' => '3h', 'description' => 'Marchez sur les traces des pèlerins médiévaux le long d\'un tronçon du célèbre chemin de Compostelle qui traverse Limoges. Guide et équipement fournis.'],
+            ['label' => 'Dîner gala de clôture', 'day' => 4, 'hour' => 19, 'price' => 65, 'category' => 'Gastronomie', 'duration' => '3h', 'description' => 'Clôturez le congrès en beauté lors d\'un dîner gastronomique en salle de prestige. Menu 5 services élaboré par un chef étoilé, vins du Limousin et animation musicale.'],
         ];
         $activities = [];
         foreach ($activitiesData as $data) {
@@ -100,7 +103,10 @@ class AppFixtures extends Fixture
             $activity = (new Activity())
                 ->setLabel($data['label'])
                 ->setDateTime($date)
-                ->setPrice($data['price']);
+                ->setPrice($data['price'])
+                ->setCategory($data['category'])
+                ->setDuration($data['duration'])
+                ->setDescription($data['description']);
             $manager->persist($activity);
             $activities[] = $activity;
         }
@@ -139,7 +145,12 @@ class AppFixtures extends Fixture
 
             // Assign hotel to 15 out of 20
             if ($i < 15) {
-                $attendee->setHotel($hotels[$i % count($hotels)]);
+                $booking = (new AttendeeHotel())
+                    ->setHotel($hotels[$i % count($hotels)])
+                    ->setNights(self::CONGRESS_DAYS)
+                    ->setBreakfast($faker->boolean(40))
+                    ->setCheckInDate(new \DateTime(self::CONGRESS_START));
+                $attendee->addHotelBooking($booking);
             }
 
             // Assign organization to 8 out of 20
@@ -209,11 +220,13 @@ class AppFixtures extends Fixture
     private function calculateTotal(Attendee $attendee): float
     {
         $total = 0.0;
-        $hotel = $attendee->getHotel();
-        if ($hotel !== null) {
-            $total += $hotel->getNightPrice() * self::CONGRESS_DAYS;
-            if ($attendee->isBreakfast()) {
-                $total += $hotel->getBreakfastPrice() * self::CONGRESS_DAYS;
+        foreach ($attendee->getHotelBookings() as $booking) {
+            $hotel = $booking->getHotel();
+            if ($hotel !== null) {
+                $total += $hotel->getNightPrice() * $booking->getNights();
+                if ($booking->isBreakfast()) {
+                    $total += $hotel->getBreakfastPrice() * $booking->getNights();
+                }
             }
         }
         foreach ($attendee->getSessionRegistration() as $session) {

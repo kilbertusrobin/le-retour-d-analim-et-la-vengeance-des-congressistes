@@ -57,7 +57,7 @@ class AttendeeStateProcessor implements ProcessorInterface
 
             $sessionsChanged = $previous->getSessionRegistration()->toArray() !== $data->getSessionRegistration()->toArray();
             $activitiesChanged = $previous->getActivityRegistration()->toArray() !== $data->getActivityRegistration()->toArray();
-            $hotelChanged = $previous->getHotel() !== $data->getHotel();
+            $hotelChanged = $previous->getHotelBookings()->count() !== $data->getHotelBookings()->count();
             $breakfastChanged = $previous->isBreakfast() !== $data->isBreakfast();
 
             if (($sessionsChanged || $activitiesChanged) && $data->hasInvoice()) {

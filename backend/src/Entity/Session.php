@@ -59,6 +59,10 @@ class Session
     #[Groups(['session:read', 'session:write', 'invoice:read'])]
     private ?int $price = null;
 
+    #[ORM\Column(nullable: true)]
+    #[Groups(['session:read', 'session:write'])]
+    private ?int $max_attendees = null;
+
     /**
      * @var Collection<int, Attendee>
      */
@@ -88,6 +92,10 @@ class Session
     public function getPrice(): ?int { return $this->price; }
 
     public function setPrice(int $price): static { $this->price = $price; return $this; }
+
+    public function getMaxAttendees(): ?int { return $this->max_attendees; }
+
+    public function setMaxAttendees(?int $max_attendees): static { $this->max_attendees = $max_attendees; return $this; }
 
     /** @return Collection<int, Attendee> */
     public function getAttendees(): Collection { return $this->attendees; }
