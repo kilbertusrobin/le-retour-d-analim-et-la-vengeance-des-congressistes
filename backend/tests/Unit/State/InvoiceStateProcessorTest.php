@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Activity;
 use App\Entity\Attendee;
+use App\Entity\AttendeeHotel;
 use App\Entity\Hotel;
 use App\Entity\Invoice;
 use App\Entity\Session;
@@ -81,7 +82,8 @@ class InvoiceStateProcessorTest extends TestCase
     {
         // 65.0 * 5 nights = 325.0, minus deposit 100 = 225.0
         $hotel = (new Hotel())->setNightPrice(65.0)->setBreakfastPrice(10.0);
-        $attendee = $this->makeAttendee(100.0)->setHotel($hotel);
+        $attendee = $this->makeAttendee(100.0);
+        $attendee->addHotelBooking((new AttendeeHotel())->setHotel($hotel)->setNights(5)->setBreakfast(false));
         $invoice = (new Invoice())->setAttendee($attendee);
 
         $this->processor->process($invoice, new Post());
@@ -93,7 +95,8 @@ class InvoiceStateProcessorTest extends TestCase
     {
         // (65 + 10) * 5 = 375.0, no deposit
         $hotel = (new Hotel())->setNightPrice(65.0)->setBreakfastPrice(10.0);
-        $attendee = $this->makeAttendee(0.0)->setHotel($hotel)->setBreakfast(true);
+        $attendee = $this->makeAttendee(0.0);
+        $attendee->addHotelBooking((new AttendeeHotel())->setHotel($hotel)->setNights(5)->setBreakfast(true));
         $invoice = (new Invoice())->setAttendee($attendee);
 
         $this->processor->process($invoice, new Post());
@@ -139,7 +142,8 @@ class InvoiceStateProcessorTest extends TestCase
     {
         // hotel 65*5=325, deposit 500 → max(0, 325-500) = 0
         $hotel = (new Hotel())->setNightPrice(65.0)->setBreakfastPrice(0.0);
-        $attendee = $this->makeAttendee(500.0)->setHotel($hotel);
+        $attendee = $this->makeAttendee(500.0);
+        $attendee->addHotelBooking((new AttendeeHotel())->setHotel($hotel)->setNights(5)->setBreakfast(false));
         $invoice = (new Invoice())->setAttendee($attendee);
 
         $this->processor->process($invoice, new Post());
@@ -152,7 +156,8 @@ class InvoiceStateProcessorTest extends TestCase
         // hotel: 65*5=325, breakfast: 10*5=50, session: 80, activity: 35, deposit: 100
         // total = 325+50+80+35-100 = 390
         $hotel = (new Hotel())->setNightPrice(65.0)->setBreakfastPrice(10.0);
-        $attendee = $this->makeAttendee(100.0)->setHotel($hotel)->setBreakfast(true);
+        $attendee = $this->makeAttendee(100.0);
+        $attendee->addHotelBooking((new AttendeeHotel())->setHotel($hotel)->setNights(5)->setBreakfast(true));
         $attendee->addSessionRegistration(
             (new Session())->setLabel('S')->setPrice(80)->setStartDate(new \DateTime())->setDurationHalfDays(1)
         );
