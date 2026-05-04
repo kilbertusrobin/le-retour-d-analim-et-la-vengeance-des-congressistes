@@ -26,7 +26,13 @@ jobs:
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-scripts
 
       - name: Create .env
-        run: echo "APP_ENV=test" > .env
+        run: |
+          echo "APP_ENV=dev" > .env
+          echo "APP_SECRET=ci-secret-not-for-production" >> .env
+          echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> .env
+          echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> .env
+          echo "JWT_PASSPHRASE=analim-jwt-passphrase" >> .env
+          echo "DATABASE_URL=sqlite:///%kernel.project_dir%/var/data.db" >> .env
 
       - name: Generate JWT keypair
         run: php bin/console lexik:jwt:generate-keypair --no-interaction
