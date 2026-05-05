@@ -62,6 +62,7 @@ const StepHebergement = ({ sel, setSel, hotels, existingBookings }: {
     if (isAlreadyBooked(id)) return;
     setSel(prev => {
       if (id in prev.hotels) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [id]: _, ...rest } = prev.hotels;
         return { ...prev, hotels: rest as Record<number, HotelSel> };
       }

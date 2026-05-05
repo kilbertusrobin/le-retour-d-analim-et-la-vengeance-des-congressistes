@@ -81,8 +81,6 @@ const HotelSingle = () => {
   const { user, updateUser } = useAuth();
   const [reserving, setReserving] = useState(false);
   const swiperRef = useRef<SwiperType | null>(null);
-  const [isBeginning, setIsBeginning] = useState(true);
-  const [isEnd, setIsEnd] = useState(false);
   const [hotel, setHotel] = useState<ApiHotel | null>(null);
   const [loading, setLoading] = useState(true);
   const [pdjActif, setPdjActif] = useState(false);
@@ -90,11 +88,6 @@ const HotelSingle = () => {
   const [showModal, setShowModal] = useState(false);
   const [arrivee, setArrivee] = useState("2026-06-08");
   const [depart, setDepart] = useState("2026-06-13");
-
-  const updateState = (s: SwiperType) => {
-    setIsBeginning(s.isBeginning);
-    setIsEnd(s.isEnd);
-  };
 
   useEffect(() => {
     if (!id) return;
@@ -246,8 +239,7 @@ const HotelSingle = () => {
             modules={[Pagination]}
             pagination={{ clickable: true }}
             loop={true}
-            onSwiper={(s) => { swiperRef.current = s; updateState(s); }}
-            onSlideChange={(s) => updateState(s)}
+            onSwiper={(s) => { swiperRef.current = s; }}
             className="single-swiper"
           >
             {images.map((src, i) => (

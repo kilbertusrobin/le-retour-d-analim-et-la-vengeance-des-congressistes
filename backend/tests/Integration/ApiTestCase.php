@@ -20,10 +20,12 @@ abstract class ApiTestCase extends WebTestCase
         $this->client = static::createClient();
         $this->em = static::getContainer()->get('doctrine.orm.entity_manager');
 
+        $connection = $this->em->getConnection();
+        $connection->executeStatement('DROP SCHEMA public CASCADE');
+        $connection->executeStatement('CREATE SCHEMA public');
+
         $schemaTool = new SchemaTool($this->em);
-        $metadata = $this->em->getMetadataFactory()->getAllMetadata();
-        $schemaTool->dropSchema($metadata);
-        $schemaTool->createSchema($metadata);
+        $schemaTool->createSchema($this->em->getMetadataFactory()->getAllMetadata());
     }
 
     protected function tearDown(): void

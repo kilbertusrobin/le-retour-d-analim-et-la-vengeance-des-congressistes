@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Attendee;
+use App\Entity\AttendeeHotel;
 use App\Entity\Invoice;
 use App\Entity\Session;
 use App\Event\AttendeeCreatedEvent;
@@ -150,7 +151,8 @@ class AttendeeStateProcessorTest extends TestCase
         $hotel->setName('H')->setAddress('A')->setCategory('2*')->setNightPrice(65.0)->setBreakfastPrice(10.0);
 
         $previous = $this->makeAttendee();
-        $current = $this->makeAttendee()->setHotel($hotel);
+        $current = $this->makeAttendee();
+        $current->addHotelBooking((new AttendeeHotel())->setHotel($hotel));
         $current->addInvoice((new Invoice())->setPrint(true));
 
         $this->expectException(UnprocessableEntityHttpException::class);
@@ -164,7 +166,8 @@ class AttendeeStateProcessorTest extends TestCase
         $hotel->setName('H')->setAddress('A')->setCategory('2*')->setNightPrice(65.0)->setBreakfastPrice(10.0);
 
         $previous = $this->makeAttendee();
-        $current = $this->makeAttendee()->setHotel($hotel);
+        $current = $this->makeAttendee();
+        $current->addHotelBooking((new AttendeeHotel())->setHotel($hotel));
         $current->addInvoice((new Invoice())->setPrint(false));
 
         // No exception expected
