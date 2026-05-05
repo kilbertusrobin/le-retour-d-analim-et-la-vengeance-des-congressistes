@@ -126,12 +126,15 @@ class AppFixtures extends Fixture
             $organizations[] = $org;
         }
 
-        $manager->flush(); // persist before ManyToMany links
+        // flush avant de créer les attendees : les relations ManyToMany (sessions, activités) ont besoin des IDs
+        $manager->flush();
 
         // ── Attendees ─────────────────────────────────────────────────────────
         $attendees = [];
 
         // 20 attendees with varied configurations
+        // Mot de passe commun pour tous les comptes de démo : "user1234"
+        // Le 1er attendee (i=0) est admin
         for ($i = 0; $i < 20; $i++) {
             $attendee = (new Attendee())
                 ->setFirstName($faker->firstName())

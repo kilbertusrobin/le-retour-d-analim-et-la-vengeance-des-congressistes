@@ -62,6 +62,7 @@ class InvoiceStateProcessor implements ProcessorInterface
         $invoice->setTotalAmount($this->calculateTotal($attendee, $invoice));
     }
 
+    // Irreversible: une fois imprimée, la facture ne peut plus être modifiée côté hébergement
     private function handleMarkPrinted(Invoice $invoice): void
     {
         $invoice->setPrint(true);

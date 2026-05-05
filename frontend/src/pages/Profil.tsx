@@ -35,6 +35,7 @@ const Profil = () => {
   const totalActivites = activites.reduce((acc, a) => acc + (a.price ?? 0), 0);
   const total = totalHotel + totalActivites;
 
+  // API Platform remplace toute la collection — on envoie la liste complète sans l'élément annulé
   const annulerHotel = async (bookingId: number) => {
     const remaining = bookings.filter(b => b.id !== bookingId);
     await apiPatch(`/api/attendees/${user.id}`, {

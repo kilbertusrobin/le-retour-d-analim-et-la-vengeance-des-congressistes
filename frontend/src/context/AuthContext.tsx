@@ -106,6 +106,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(me);
   };
 
+  // Utilisé après l'inscription : évite un aller-retour inutile vers /api/me
+  // puisqu'on a déjà les données de l'utilisateur fraîchement créé
   const loginWithToken = (jwt: string, userData: AuthUser) => {
     localStorage.setItem('token', jwt);
     localStorage.setItem('user', JSON.stringify(userData));
@@ -120,6 +122,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
   };
 
+  // Rafraîchit les données de l'utilisateur après une modification (réservation, annulation…)
+  // Si le token est expiré, déconnecte proprement plutôt que de laisser un état incohérent
   const updateUser = async () => {
     if (!token) return;
     try {
@@ -131,7 +135,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // Revalidate token on mount
+  // Après un F5 : le token est dans localStorage mais le state React est vide — on rehydrate
   useEffect(() => {
     if (token && !user) {
       fetchMe(token).then(me => {
