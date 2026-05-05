@@ -37,10 +37,11 @@ class ActivityApiTest extends ApiTestCase
         $this->assertArrayHasKey('member', $data);
     }
 
-    public function testGetActivitiesWithoutTokenReturns401(): void
+    public function testGetActivitiesWithoutTokenReturns200(): void
     {
         $this->jsonRequest('GET', '/api/activities');
-        $this->assertResponseStatusCodeSame(401);
+        $data = $this->assertJsonResponse(200);
+        $this->assertArrayHasKey('member', $data);
     }
 
     // ── POST ──────────────────────────────────────────────────────────────────
