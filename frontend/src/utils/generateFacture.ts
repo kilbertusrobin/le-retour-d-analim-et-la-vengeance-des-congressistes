@@ -62,6 +62,7 @@ export const generateFacture = (
 
   const now = new Date();
   const dateStr = now.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+  // Numéro purement cosmétique généré côté client — il n'est pas sauvegardé en base
   const numeroFacture = `FAC-${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${Math.floor(Math.random() * 9000 + 1000)}`;
 
   doc.text(`N° ${numeroFacture}`, col2, 26, { align: "right" });

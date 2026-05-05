@@ -151,6 +151,7 @@ class Attendee implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string { return (string) $this->email; }
 
+    // ROLE_USER est toujours ajouté dynamiquement — pas besoin de le stocker en base
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -272,11 +273,13 @@ class Attendee implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    // Bloque la création d'une 2ème facture et verrouille les inscriptions sessions/activités
     public function hasInvoice(): bool
     {
         return !$this->invoices->isEmpty();
     }
 
+    // Une facture imprimée verrouille définitivement l'hébergement et le petit déjeuner
     public function hasPrintedInvoice(): bool
     {
         foreach ($this->invoices as $invoice) {

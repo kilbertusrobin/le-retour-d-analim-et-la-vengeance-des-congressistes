@@ -52,6 +52,7 @@ class StatsController extends AbstractController
         $printed   = $this->invoiceRepo->count(['print' => true]);
         $unsettled = $total - $settled;
 
+        // Montant total restant dû (utile pour relancer les impayés)
         $unsettledAmount = $this->invoiceRepo->createQueryBuilder('i')
             ->select('SUM(i.total_amount)')
             ->where('i.settled = false')
@@ -81,6 +82,7 @@ class StatsController extends AbstractController
 
     private function sessionStats(): array
     {
+        // Top 10 sessions par popularité — au-delà, le tableau de bord devient illisible
         $rows = $this->sessionRepo->createQueryBuilder('s')
             ->select('s.id, s.label, COUNT(a.id) AS attendee_count')
             ->leftJoin('s.attendees', 'a')

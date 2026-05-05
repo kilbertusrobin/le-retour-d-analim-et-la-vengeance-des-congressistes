@@ -67,7 +67,8 @@ class PaymentStateProcessor implements ProcessorInterface
 
         $result = $this->removeProcessor->process($payment, $operation, $uriVariables, $context);
 
-        // Re-evaluate settled status: settled only if remaining payments exist
+        // refresh() est nécessaire : la collection payments est stale après suppression
+        // settled = true seulement s'il reste au moins un paiement
         if ($invoice !== null) {
             $this->em->refresh($invoice);
             $invoice->setSettled(!$invoice->getPayments()->isEmpty());

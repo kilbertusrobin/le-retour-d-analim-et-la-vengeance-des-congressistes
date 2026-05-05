@@ -1,5 +1,7 @@
 const BASE_URL = 'http://localhost:8000';
 
+// Wrapper central pour tous les appels API : injecte le JWT et normalise les erreurs
+// L'erreur enrichie avec `status` et `data` permet d'afficher les messages de validation de l'API
 export async function apiFetch(path: string, options: RequestInit = {}): Promise<Response> {
   const token = localStorage.getItem('token');
   const headers: Record<string, string> = {
@@ -22,6 +24,7 @@ export async function apiGet<T>(path: string): Promise<T> {
   return res.json();
 }
 
+// API Platform exige application/ld+json pour les POST
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   const res = await apiFetch(path, {
     method: 'POST',
@@ -31,6 +34,7 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   return res.json();
 }
 
+// API Platform exige application/merge-patch+json pour les PATCH
 export async function apiPatch<T>(path: string, body: unknown): Promise<T> {
   const res = await apiFetch(path, {
     method: 'PATCH',

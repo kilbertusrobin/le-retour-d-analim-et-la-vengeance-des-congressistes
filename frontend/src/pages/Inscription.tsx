@@ -27,6 +27,7 @@ const Inscription = () => {
     if (!/[\W_]/.test(form.password)) { setError("Le mot de passe doit contenir au moins un caractère spécial (!@#$…)."); return; }
     setLoading(true);
     try {
+      // 1. Créer le compte, 2. s'authentifier immédiatement avec les mêmes identifiants
       const newUser = await apiPost<AuthUser>('/api/attendees', {
         first_name: form.firstName,
         last_name: form.lastName,
