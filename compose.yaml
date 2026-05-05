@@ -40,6 +40,40 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: "1"
       MP_SMTP_AUTH_ALLOW_INSECURE: "1"
 
+  backend:
+    build: ./backend
+    container_name: congressistes_backend
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend:/var/www/html
+      # Volume anonyme : empêche le vendor Windows de masquer le vendor Linux du build
+      - /var/www/html/vendor
+      # Volume nommé pour var/ (cache, logs) afin d'éviter les problèmes de droits Windows
+      - backend_var:/var/www/html/var
+    environment:
+      APP_SECRET: analim-dev-secret-not-for-production
+      DATABASE_URL: "postgresql://app:secret@postgres:5432/congressistes?serverVersion=16&charset=utf8"
+      MAILER_DSN: "smtp://mailpit:1025"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+
+  frontend:
+    build: ./frontend
+    container_name: congressistes_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      # Volume anonyme : empêche les node_modules Windows de masquer ceux buildés pour Linux
+      - /app/node_modules
+    depends_on:
+      - backend
+
 volumes:
   postgres_data:
   pgadmin_data:
+  backend_var:

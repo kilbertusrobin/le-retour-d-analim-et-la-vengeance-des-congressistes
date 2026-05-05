@@ -1,6 +1,8 @@
 security:
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+            algorithm: bcrypt
+            cost: 4
 
     providers:
         app_user_provider:
@@ -30,6 +32,9 @@ security:
         - { path: ^/api/docs, roles: PUBLIC_ACCESS }
         - { path: ^/api$, roles: PUBLIC_ACCESS }
         - { path: ^/api/attendees$, roles: PUBLIC_ACCESS, methods: [POST] }
+        - { path: ^/api/hotels, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/activities, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/sessions, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:

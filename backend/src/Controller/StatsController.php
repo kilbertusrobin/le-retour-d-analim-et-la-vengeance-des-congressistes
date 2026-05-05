@@ -109,8 +109,8 @@ class StatsController extends AbstractController
     private function hotelStats(): array
     {
         $rows = $this->hotelRepo->createQueryBuilder('h')
-            ->select('h.id, h.name, h.category, h.night_price, COUNT(att.id) AS occupancy')
-            ->leftJoin('h.attendees', 'att')
+            ->select('h.id, h.name, h.category, h.night_price, COUNT(ah.id) AS occupancy')
+            ->leftJoin(\App\Entity\AttendeeHotel::class, 'ah', 'WITH', 'ah.hotel = h')
             ->groupBy('h.id, h.name, h.category, h.night_price')
             ->orderBy('occupancy', 'DESC')
             ->getQuery()

@@ -3,6 +3,7 @@
 namespace App\Tests\Integration\Api;
 
 use App\Entity\Attendee;
+use App\Entity\AttendeeHotel;
 use App\Entity\Invoice;
 use App\Tests\Integration\ApiTestCase;
 
@@ -84,10 +85,17 @@ class InvoiceApiTest extends ApiTestCase
         $this->assertTrue($data['print']);
     }
 
-    public function testGetInvoicesWithUserTokenReturns200(): void
+    public function testGetInvoicesWithUserTokenReturns403(): void
     {
         $this->jsonRequest('GET', '/api/invoices', [], $this->userToken);
-        $this->assertResponseStatusCodeSame(200);
+        $this->assertResponseStatusCodeSame(403);
+    }
+
+    public function testGetInvoicesWithAdminTokenReturns200(): void
+    {
+        $this->jsonRequest('GET', '/api/invoices', [], $this->adminToken);
+        $data = $this->assertJsonResponse(200);
+        $this->assertArrayHasKey('member', $data);
     }
 
     public function testGetInvoicesWithoutTokenReturns401(): void
@@ -105,7 +113,7 @@ class InvoiceApiTest extends ApiTestCase
         $this->em->persist($hotel);
 
         $attendee = $this->createAttendee('bob@test.com', 'password123');
-        $attendee->setHotel($hotel)->setBreakfast(false)->setDeposit(0.0);
+        $attendee->addHotelBooking((new AttendeeHotel())->setHotel($hotel)->setNights(5)->setBreakfast(false));
         $this->em->flush();
 
         $this->jsonRequest('POST', '/api/invoices', [

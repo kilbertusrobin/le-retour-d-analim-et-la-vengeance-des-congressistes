@@ -84,10 +84,17 @@ class PaymentApiTest extends ApiTestCase
         $this->assertFalse($updatedInvoice['settled']);
     }
 
-    public function testGetPaymentsWithUserTokenReturns200(): void
+    public function testGetPaymentsWithUserTokenReturns403(): void
     {
         $this->jsonRequest('GET', '/api/payments', [], $this->userToken);
-        $this->assertResponseStatusCodeSame(200);
+        $this->assertResponseStatusCodeSame(403);
+    }
+
+    public function testGetPaymentsWithAdminTokenReturns200(): void
+    {
+        $this->jsonRequest('GET', '/api/payments', [], $this->adminToken);
+        $data = $this->assertJsonResponse(200);
+        $this->assertArrayHasKey('member', $data);
     }
 
     public function testGetPaymentsWithoutTokenReturns401(): void

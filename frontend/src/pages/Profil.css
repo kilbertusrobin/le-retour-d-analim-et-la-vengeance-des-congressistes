@@ -1,0 +1,430 @@
+.profil-spacer {
+    height: 100px;
+}
+
+.profil-page {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 40px;
+    padding: 40px 80px 80px 80px;
+    align-items: flex-start;
+    min-height: calc(100vh - 200px);
+}
+
+/* Aside */
+.profil-aside {
+    position: sticky;
+    top: 80px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.profil-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #01b285;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+}
+
+.profil-aside-info {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.profil-nom {
+    font-size: 15px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+}
+
+.profil-email {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.4);
+    margin: 0;
+}
+
+.profil-divider {
+    height: 1px;
+    background: #f0f0f0;
+}
+
+.profil-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.profil-nav-link {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.55);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.15s ease, color 0.15s ease;
+    background: none;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+}
+
+.profil-nav-link:hover {
+    background: #f5f5f5;
+    color: #000;
+}
+
+.profil-nav-link--active {
+    background: #f0faf6;
+    color: #01b285;
+    font-weight: 600;
+}
+
+.profil-deconnexion {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.4);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.profil-deconnexion:hover {
+    color: #cc0000;
+    background: #fff5f5;
+}
+
+/* Main */
+.profil-main {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.profil-section {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.profil-section-titre {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+}
+
+.profil-vide {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.4);
+    margin: 0;
+}
+
+/* Cards */
+.profil-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.profil-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px;
+    border: 1px solid #f0f0f0;
+    border-radius: 12px;
+    background: #fafafa;
+}
+
+.profil-card-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.profil-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.profil-card-icon--hotel {
+    background: #f0faf6;
+    color: #01b285;
+}
+
+.profil-card-icon--activite {
+    background: #eff8ff;
+    color: #02affe;
+}
+
+.profil-card-titre {
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+}
+
+.profil-card-sous {
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.45);
+    margin: 4px 0 0 0;
+}
+
+.profil-card-tags {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.profil-tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: #e8f5f0;
+    color: #01b285;
+}
+
+.profil-card-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.profil-card-prix {
+    font-size: 17px;
+    font-weight: 700;
+    color: #000;
+    white-space: nowrap;
+}
+
+.profil-annuler {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    color: rgba(0, 0, 0, 0.35);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.15s ease;
+    outline: none;
+}
+
+.profil-annuler svg {
+    flex-shrink: 0;
+    display: block;
+}
+
+.profil-annuler:hover {
+    color: #cc0000;
+    border-color: transparent;
+}
+
+/* Empty state */
+.profil-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.profil-empty-texte {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.4);
+    margin: 0;
+}
+
+.profil-empty-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    background: #f5f5f5;
+    color: #000;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.profil-empty-btn:hover {
+    background: #ebebeb;
+    color: #000;
+}
+
+/* Modale confirmation */
+.profil-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profil-modal {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profil-modal-titre {
+    font-size: 17px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+}
+
+.profil-modal-sous {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.5);
+    margin: 0 0 12px 0;
+}
+
+.profil-modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.profil-modal-cancel {
+    flex: 1;
+    padding: 11px;
+    background: #f5f5f5;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.profil-modal-cancel:hover {
+    background: #ebebeb;
+    border-color: transparent;
+}
+
+.profil-modal-confirm {
+    flex: 1;
+    padding: 11px;
+    background: #cc0000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.profil-modal-confirm:hover {
+    background: #aa0000;
+    border-color: transparent;
+}
+
+/* Total */
+.profil-section--total {
+    gap: 16px;
+}
+
+.profil-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.profil-total-sous {
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.4);
+    margin: 4px 0 0 0;
+}
+
+.profil-total-montant {
+    font-size: 36px;
+    font-weight: 700;
+    color: #000;
+}
+
+.profil-total-detail {
+    display: flex;
+    gap: 24px;
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.5);
+    padding-top: 4px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.profil-total-detail strong {
+    color: #000;
+    font-weight: 600;
+}
+
+.profil-facture-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    width: fit-content;
+    transition: background 0.2s ease;
+}
+
+.profil-facture-btn:hover {
+    background: #222;
+    border-color: transparent;
+}

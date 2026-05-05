@@ -18,9 +18,6 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
  */
 class InvoiceStateProcessor implements ProcessorInterface
 {
-    // Congress lasts 5 working days
-    private const CONGRESS_DAYS = 5;
-
     public function __construct(
         #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
         private ProcessorInterface $persistProcessor,
@@ -74,12 +71,14 @@ class InvoiceStateProcessor implements ProcessorInterface
     {
         $total = 0.0;
 
-        // Hotel cost: night_price * congress days (+ breakfast_price * days if requested)
-        $hotel = $attendee->getHotel();
-        if ($hotel !== null) {
-            $total += $hotel->getNightPrice() * self::CONGRESS_DAYS;
-            if ($attendee->isBreakfast()) {
-                $total += $hotel->getBreakfastPrice() * self::CONGRESS_DAYS;
+        // Hotel cost: per booking — night_price * nights (+ breakfast_price * nights if requested)
+        foreach ($attendee->getHotelBookings() as $booking) {
+            $hotel = $booking->getHotel();
+            if ($hotel !== null) {
+                $total += $hotel->getNightPrice() * $booking->getNights();
+                if ($booking->isBreakfast()) {
+                    $total += $hotel->getBreakfastPrice() * $booking->getNights();
+                }
             }
         }
 

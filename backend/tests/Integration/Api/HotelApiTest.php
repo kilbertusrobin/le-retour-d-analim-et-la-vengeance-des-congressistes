@@ -39,10 +39,11 @@ class HotelApiTest extends ApiTestCase
         $this->assertArrayHasKey('member', $data);
     }
 
-    public function testGetHotelsWithoutTokenReturns401(): void
+    public function testGetHotelsWithoutTokenReturns200(): void
     {
         $this->jsonRequest('GET', '/api/hotels');
-        $this->assertResponseStatusCodeSame(401);
+        $data = $this->assertJsonResponse(200);
+        $this->assertArrayHasKey('member', $data);
     }
 
     // ── POST ──────────────────────────────────────────────────────────────────

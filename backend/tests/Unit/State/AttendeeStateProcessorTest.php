@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Attendee;
+use App\Entity\AttendeeHotel;
 use App\Entity\Invoice;
 use App\Entity\Session;
 use App\Event\AttendeeCreatedEvent;
@@ -14,12 +15,14 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class AttendeeStateProcessorTest extends TestCase
 {
     private ProcessorInterface $persistProcessor;
     private EventDispatcherInterface $dispatcher;
     private UserPasswordHasherInterface $hasher;
+    private AuthorizationCheckerInterface $authChecker;
     private AttendeeStateProcessor $processor;
 
     protected function setUp(): void
@@ -29,11 +32,14 @@ class AttendeeStateProcessorTest extends TestCase
 
         $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->hasher = $this->createMock(UserPasswordHasherInterface::class);
+        $this->authChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $this->authChecker->method('isGranted')->willReturn(true); // admin by default in unit tests
 
         $this->processor = new AttendeeStateProcessor(
             $this->persistProcessor,
             $this->dispatcher,
-            $this->hasher
+            $this->hasher,
+            $this->authChecker,
         );
     }
 
@@ -145,7 +151,8 @@ class AttendeeStateProcessorTest extends TestCase
         $hotel->setName('H')->setAddress('A')->setCategory('2*')->setNightPrice(65.0)->setBreakfastPrice(10.0);
 
         $previous = $this->makeAttendee();
-        $current = $this->makeAttendee()->setHotel($hotel);
+        $current = $this->makeAttendee();
+        $current->addHotelBooking((new AttendeeHotel())->setHotel($hotel));
         $current->addInvoice((new Invoice())->setPrint(true));
 
         $this->expectException(UnprocessableEntityHttpException::class);
@@ -159,7 +166,8 @@ class AttendeeStateProcessorTest extends TestCase
         $hotel->setName('H')->setAddress('A')->setCategory('2*')->setNightPrice(65.0)->setBreakfastPrice(10.0);
 
         $previous = $this->makeAttendee();
-        $current = $this->makeAttendee()->setHotel($hotel);
+        $current = $this->makeAttendee();
+        $current->addHotelBooking((new AttendeeHotel())->setHotel($hotel));
         $current->addInvoice((new Invoice())->setPrint(false));
 
         // No exception expected

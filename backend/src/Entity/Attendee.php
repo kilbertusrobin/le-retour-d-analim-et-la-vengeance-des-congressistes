@@ -28,17 +28,23 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['attendee:write']],
     order: ['last_name' => 'ASC', 'first_name' => 'ASC'],
     operations: [
-        new GetCollection(),
-        new Get(),
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN')",
+        ),
+        new Get(
+            security: "is_granted('ROLE_ADMIN') or object == user",
+        ),
         new Post(
             processor: AttendeeStateProcessor::class,
+            validationContext: ['groups' => ['Default', 'create']],
         ),
         new Put(
             security: "is_granted('ROLE_ADMIN')",
             processor: AttendeeStateProcessor::class,
         ),
         new Patch(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN') or object == user",
+            denormalizationContext: ['groups' => ['attendee:write', 'attendee:admin:write']],
             processor: AttendeeStateProcessor::class,
         ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
@@ -81,21 +87,31 @@ class Attendee implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['attendee:read', 'attendee:write'])]
     private ?float $deposit = null;
 
-    #[ORM\ManyToOne(inversedBy: 'attendees')]
+    /**
+     * @var Collection<int, AttendeeHotel>
+     */
+    #[ORM\OneToMany(targetEntity: AttendeeHotel::class, mappedBy: 'attendee', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups(['attendee:read', 'attendee:write'])]
-    private ?Hotel $hotel = null;
+    private Collection $hotel_bookings;
 
     #[ORM\Column]
     #[Groups(['attendee:read', 'attendee:write'])]
     private ?bool $breakfast = false;
 
     #[ORM\Column]
+    #[Groups(['attendee:read', 'attendee:admin:write'])]
     private array $roles = [];
 
     #[ORM\Column]
     private ?string $password = null;
 
     #[Groups(['attendee:write'])]
+    #[Assert\NotBlank(groups: ['create'], message: 'Le mot de passe est obligatoire.')]
+    #[Assert\Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.')]
+    #[Assert\Regex(pattern: '/[A-Z]/', message: 'Le mot de passe doit contenir au moins une majuscule.')]
+    #[Assert\Regex(pattern: '/[a-z]/', message: 'Le mot de passe doit contenir au moins une minuscule.')]
+    #[Assert\Regex(pattern: '/[0-9]/', message: 'Le mot de passe doit contenir au moins un chiffre.')]
+    #[Assert\Regex(pattern: '/[\W_]/', message: 'Le mot de passe doit contenir au moins un caractère spécial.')]
     private ?string $plainPassword = null;
 
     #[ORM\ManyToOne(inversedBy: 'attendees')]
@@ -125,6 +141,7 @@ class Attendee implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
+        $this->hotel_bookings = new ArrayCollection();
         $this->session_registration = new ArrayCollection();
         $this->activity_registration = new ArrayCollection();
         $this->invoices = new ArrayCollection();
@@ -173,9 +190,23 @@ class Attendee implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setDeposit(float $deposit): static { $this->deposit = $deposit; return $this; }
 
-    public function getHotel(): ?Hotel { return $this->hotel; }
+    /** @return Collection<int, AttendeeHotel> */
+    public function getHotelBookings(): Collection { return $this->hotel_bookings; }
 
-    public function setHotel(?Hotel $hotel): static { $this->hotel = $hotel; return $this; }
+    public function addHotelBooking(AttendeeHotel $booking): static
+    {
+        if (!$this->hotel_bookings->contains($booking)) {
+            $this->hotel_bookings->add($booking);
+            $booking->setAttendee($this);
+        }
+        return $this;
+    }
+
+    public function removeHotelBooking(AttendeeHotel $booking): static
+    {
+        $this->hotel_bookings->removeElement($booking);
+        return $this;
+    }
 
     public function isBreakfast(): ?bool { return $this->breakfast; }
 

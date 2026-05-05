@@ -38,10 +38,11 @@ class SessionApiTest extends ApiTestCase
         $this->assertArrayHasKey('member', $data);
     }
 
-    public function testGetSessionsWithoutTokenReturns401(): void
+    public function testGetSessionsWithoutTokenReturns200(): void
     {
         $this->jsonRequest('GET', '/api/sessions');
-        $this->assertResponseStatusCodeSame(401);
+        $data = $this->assertJsonResponse(200);
+        $this->assertArrayHasKey('member', $data);
     }
 
     // ── POST ──────────────────────────────────────────────────────────────────
