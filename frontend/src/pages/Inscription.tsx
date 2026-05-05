@@ -20,6 +20,11 @@ const Inscription = () => {
     e.preventDefault();
     setError("");
     if (form.password !== form.confirm) { setError("Les mots de passe ne correspondent pas."); return; }
+    if (form.password.length < 8) { setError("Le mot de passe doit contenir au moins 8 caractères."); return; }
+    if (!/[A-Z]/.test(form.password)) { setError("Le mot de passe doit contenir au moins une majuscule."); return; }
+    if (!/[a-z]/.test(form.password)) { setError("Le mot de passe doit contenir au moins une minuscule."); return; }
+    if (!/[0-9]/.test(form.password)) { setError("Le mot de passe doit contenir au moins un chiffre."); return; }
+    if (!/[\W_]/.test(form.password)) { setError("Le mot de passe doit contenir au moins un caractère spécial (!@#$…)."); return; }
     setLoading(true);
     try {
       const newUser = await apiPost<AuthUser>('/api/attendees', {
@@ -82,7 +87,7 @@ const Inscription = () => {
           <div className="auth-row">
             <div className="auth-field">
               <label className="auth-label">Mot de passe</label>
-              <input type="password" className="auth-input" placeholder="••••••••" value={form.password} onChange={set("password")} required />
+              <input type="password" className="auth-input" placeholder="••••••••" value={form.password} onChange={set("password")} required minLength={8} />
             </div>
             <div className="auth-field">
               <label className="auth-label">Confirmer le mot de passe</label>

@@ -36,6 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             processor: AttendeeStateProcessor::class,
+            validationContext: ['groups' => ['Default', 'create']],
         ),
         new Put(
             security: "is_granted('ROLE_ADMIN')",
@@ -105,6 +106,12 @@ class Attendee implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Groups(['attendee:write'])]
+    #[Assert\NotBlank(groups: ['create'], message: 'Le mot de passe est obligatoire.')]
+    #[Assert\Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.')]
+    #[Assert\Regex(pattern: '/[A-Z]/', message: 'Le mot de passe doit contenir au moins une majuscule.')]
+    #[Assert\Regex(pattern: '/[a-z]/', message: 'Le mot de passe doit contenir au moins une minuscule.')]
+    #[Assert\Regex(pattern: '/[0-9]/', message: 'Le mot de passe doit contenir au moins un chiffre.')]
+    #[Assert\Regex(pattern: '/[\W_]/', message: 'Le mot de passe doit contenir au moins un caractère spécial.')]
     private ?string $plainPassword = null;
 
     #[ORM\ManyToOne(inversedBy: 'attendees')]
