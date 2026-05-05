@@ -3,6 +3,7 @@
 namespace App\Tests\Integration\Api;
 
 use App\Entity\Attendee;
+use App\Entity\AttendeeHotel;
 use App\Entity\Invoice;
 use App\Tests\Integration\ApiTestCase;
 
@@ -112,7 +113,7 @@ class InvoiceApiTest extends ApiTestCase
         $this->em->persist($hotel);
 
         $attendee = $this->createAttendee('bob@test.com', 'password123');
-        $attendee->setHotel($hotel)->setBreakfast(false)->setDeposit(0.0);
+        $attendee->addHotelBooking((new AttendeeHotel())->setHotel($hotel)->setNights(5)->setBreakfast(false));
         $this->em->flush();
 
         $this->jsonRequest('POST', '/api/invoices', [
